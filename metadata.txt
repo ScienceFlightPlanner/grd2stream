@@ -3,17 +3,17 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Grd2Stream 
+name=grd2stream
 qgisMinimumVersion=3.0
-description=TODO
+description=flowline generation derived from velocity grids
 version=0.1
-author=TODO
+author=Thomas Kleiner, Abraham Wondimu
 email=scienceflightplanner@gmail.com
 
-about=TODO
+about=computes & displays streamlines based on velocity grids (GMT & GDAL compatible)
 
-tracker=http://bugs
-repository=https://github.com/ScienceFlightPlanner/grd2stream-QGIS-Plugin.git
+tracker=https://github.com/tkleiner/grd2stream/issues
+repository=https://github.com/ScienceFlightPlanner/grd2stream-QGIS-Plugin
 # End of mandatory metadata
 
 # Recommended items:
@@ -25,7 +25,7 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=python, flowlines, glacier
 
-homepage=http://homepage
+homepage=https://github.com/ScienceFlightPlanner
 category=Plugins
 icon=icon.png
 # experimental flag
