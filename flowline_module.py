@@ -322,7 +322,7 @@ class FlowlineModule:
             raster_path_1 = self.selected_raster_1.source()
             raster_path_2 = self.selected_raster_2.source()
 
-            cmd = f'{self.conda_path} run -n GMT6 {grd2stream_path} {raster_path_1} {raster_path_2} -f {seed_file_path}'
+            cmd = f'"{self.conda_path}" run -n GMT6 "{grd2stream_path}" "{raster_path_1}" "{raster_path_2}" -f "{seed_file_path}"'
             if self.backward_steps:
                 cmd += " -b"
             if self.step_size:
