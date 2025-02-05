@@ -119,7 +119,8 @@ class FlowlineModule:
         # grd2stream-0.2.14
         # Copyright (c) 2013-2024, Thomas Kleiner
         # licensed under BSD-3-Clause License
-        local_tar = os.path.join(plugin_root, "grd2stream-0.2.14.tar.gz")
+        # see 'libs/LICENSE.txt' for full license text
+        local_tar = os.path.join(plugin_root, "libs/grd2stream-0.2.14.tar.gz")
         try:
             with tempfile.TemporaryDirectory() as build_dir:
                 subprocess.run(
