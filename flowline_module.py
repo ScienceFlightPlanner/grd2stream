@@ -116,6 +116,9 @@ class FlowlineModule:
         print("Installing grd2stream...")
         self.show_download_popup("Building & Installing grd2stream...")
         plugin_root = os.path.dirname(__file__)
+        # grd2stream-0.2.14
+        # Copyright (c) 2013-2024, Thomas Kleiner
+        # licensed under BSD-3-Clause License
         local_tar = os.path.join(plugin_root, "grd2stream-0.2.14.tar.gz")
         try:
             with tempfile.TemporaryDirectory() as build_dir:
