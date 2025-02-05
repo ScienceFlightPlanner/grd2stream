@@ -1,7 +1,21 @@
 # grd2stream
+The `grd2stream` QGIS plugin allows to comfortably **generate multiple flowlines from velocity grids** by selecting seed points. This plugin utilizes **GMT6** to ensure compatibility with all GDAL file formats!
 
-## Description
-The `grd2stream` QGIS plugin computes and displays streamlines based on velocity grids. This plugin requires **GMT (Generic Mapping Tools)** for core functionality. For compatibility with all GDAL file formats (e.g., NetCDF, GTiFF, etc.), ensure GMT version 6 is installed.
+---
+
+## Platform Support
+> The plugin installs GMT6 in an isolated Conda environment, which **<u>does not</u> affect any existing native GMT6 installations** on your system
+
+### macOS & Linux
+- ✅ Fully supported
+
+### Windows
+- 🚧 Coming Soon! Currently under development...
+
+---
+
+## Troubleshooting
+- For detailed logs, check the QGIS Python console!
 
 ---
 
@@ -12,8 +26,8 @@ The `grd2stream` QGIS plugin computes and displays streamlines based on velocity
 ---
 
 ## Third-Party Licenses
-This plugin includes the following third-party components:
-- **grd2stream**:
-   - A tool for computing flowlines from gridded velocity fields.
-   - Licensed under the BSD 3-Clause License.
-   - See the full [LICENSE](./libs/grd2stream/LICENSE.txt) text for details.
+>This plugin includes the following third-party components:
+- [**grd2stream**](https://github.com/tkleiner/grd2stream) (by [Thomas Kleiner](https://github.com/tkleiner)):
+   - CLI tool that calculates stream lines from gridded velocity fields using Runge-Kutta integration methods
+   - licensed under the BSD 3-Clause License
+     - see the full [LICENSE](./libs/LICENSE.txt) text for details
