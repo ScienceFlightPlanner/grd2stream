@@ -319,8 +319,8 @@ class FlowlineModule:
             gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
             grd2stream_path = os.path.join(gmt6_env_path, "bin", "grd2stream")
 
-            raster_path_1 = self.selected_raster_1.dataProvider().dataSourceUri()
-            raster_path_2 = self.selected_raster_2.dataProvider().dataSourceUri()
+            raster_path_1 = self.selected_raster_1.source()
+            raster_path_2 = self.selected_raster_2.source()
 
             cmd = f'{self.conda_path} run -n GMT6 {grd2stream_path} {raster_path_1} {raster_path_2} -f {seed_file_path}'
             if self.backward_steps:
