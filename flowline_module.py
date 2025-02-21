@@ -230,6 +230,8 @@ class FlowlineModule:
         if dialog.exec_():
             self.selected_raster_1 = dialog.selected_raster_1
             self.selected_raster_2 = dialog.selected_raster_2
+            self.selected_band_1 = getattr(dialog, "selected_band_1", 1)
+            self.selected_band_2 = getattr(dialog, "selected_band_2", 1)
 
             self.backward_steps = dialog.backward_steps
             self.step_size = dialog.step_size
@@ -239,7 +241,7 @@ class FlowlineModule:
 
             self.iface.messageBar().pushMessage(
                 "Info",
-                f"Selected rasters: {self.selected_raster_1.name()}, {self.selected_raster_2.name()}",
+                f"Selected rasters: {self.selected_raster_1.name()}, {self.selected_raster_2.name()} (Bands: {self.selected_band_1}, {self.selected_band_2})",
                 level=Qgis.Info,
                 duration=5
             )
@@ -325,6 +327,19 @@ class FlowlineModule:
 
             raster_path_1 = self.selected_raster_1.source()
             raster_path_2 = self.selected_raster_2.source()
+
+            for prefix in ["NETCDF:", "HDF5:", "GRIB:"]:  # Extend this list if needed
+                if raster_path_1.startswith(prefix):
+                    raster_path_1 = raster_path_1[len(prefix):].strip()
+                if raster_path_2.startswith(prefix):
+                    raster_path_2 = raster_path_2[len(prefix):].strip()
+
+            if ":" in raster_path_1:
+                file_path, variable = raster_path_1.rsplit(":", 1)
+                raster_path_1 = f"{file_path}?{variable}"
+            if ":" in raster_path_2:
+                file_path, variable = raster_path_2.rsplit(":", 1)
+                raster_path_2 = f"{file_path}?{variable}"
 
             cmd = f'"{self.conda_path}" run -n GMT6 "{grd2stream_path}" "{raster_path_1}" "{raster_path_2}" -f "{seed_file_path}"'
             if self.backward_steps:
@@ -495,20 +510,38 @@ class SelectionDialog(QDialog):
         layers = QgsProject.instance().mapLayers().values()
         raster_layers = [layer for layer in layers if isinstance(layer, QgsRasterLayer)]
         for layer in raster_layers:
-            self.layer_box_1.addItem(layer.name(), layer)
-            self.layer_box_2.addItem(layer.name(), layer)
+            band_count = layer.bandCount()
+            if band_count > 1:
+                for band in range(1, band_count + 1):
+                    self.layer_box_1.addItem(f"{layer.name()} - Band {band}", (layer, band))
+                    self.layer_box_2.addItem(f"{layer.name()} - Band {band}", (layer, band))
+            else:
+                self.layer_box_1.addItem(f"{layer.name()} - Band 1", (layer, 1))
+                self.layer_box_2.addItem(f"{layer.name()} - Band 1", (layer, 1))
 
     def accept(self):
         index_1 = self.layer_box_1.currentIndex()
         index_2 = self.layer_box_2.currentIndex()
 
-        self.selected_raster_1 = self.layer_box_1.itemData(index_1)
-        self.selected_raster_2 = self.layer_box_2.itemData(index_2)
+        selected_1 = self.layer_box_1.itemData(index_1)
+        selected_2 = self.layer_box_2.itemData(index_2)
 
-        if self.selected_raster_1 == self.selected_raster_2:
+        if isinstance(selected_1, tuple):
+            self.selected_raster_1, self.selected_band_1 = selected_1
+        else:
+            self.selected_raster_1 = selected_1
+            self.selected_band_1 = 1
+
+        if isinstance(selected_2, tuple):
+            self.selected_raster_2, self.selected_band_2 = selected_2
+        else:
+            self.selected_raster_2 = selected_2
+            self.selected_band_2 = 1
+
+        if self.selected_raster_1 == self.selected_raster_2 and self.selected_band_1 == self.selected_band_2:
             self.iface.messageBar().pushMessage(
                 "Error",
-                "Please select two different grid layers.",
+                "Please select two different raster layers/bands.",
                 level=Qgis.Critical,
                 duration=5
             )
