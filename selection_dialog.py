@@ -91,8 +91,12 @@ class SelectionDialog(QDialog):
         self.flowline_module.save_current_settings()
 
     def manage_presets(self):
-        self.flowline_module.manage_presets()
-        self.close()
+        if self.flowline_module:
+            original_preset = getattr(self.flowline_module, 'last_used_preset', None)
+            self.flowline_module.manage_presets()
+            new_preset = getattr(self.flowline_module, 'last_used_preset', None)
+            if new_preset and new_preset != original_preset:
+                self.close()
 
     def use_last_settings(self):
         if self.flowline_module:
