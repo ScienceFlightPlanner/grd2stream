@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QPushButton, QCheckBo
 from PyQt5.QtCore import Qt
 
 from .preset_manager import PresetManager, PresetDialog, SavePresetDialog
-from .selection_dialog import SelectionDialog
 
 class FlowlineModule:
     def __init__(self, iface):
@@ -291,6 +290,7 @@ class FlowlineModule:
                 self.install_grd2stream()
 
     def open_selection_dialog(self):
+
         gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
         grd2stream_executable = os.path.join(gmt6_env_path, "bin", "grd2stream")
         if self.system == "Windows":
@@ -298,7 +298,8 @@ class FlowlineModule:
         if not os.path.exists(grd2stream_executable):
             self.prompt_missing_installation()
 
-        dialog = SelectionDialog(self.iface)
+        from .selection_dialog import SelectionDialog
+        dialog = SelectionDialog(self.iface, self)
 
         if dialog.exec_():
             self.selected_raster_1 = dialog.selected_raster_1

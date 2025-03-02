@@ -2,14 +2,11 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox, QPushButto
 from PyQt5.QtCore import Qt
 from qgis.core import QgsProject, Qgis, QgsRasterLayer
 
-import flowline_module
-from .flowline_module import FlowlineModule
-
 class SelectionDialog(QDialog):
-    def __init__(self, iface):
+    def __init__(self, iface, flowline_module_instance=None):
         super().__init__(parent=None)
         self.iface = iface
-        self.flowline_module = flowline_module
+        self.flowline_module = flowline_module_instance
         self.setWindowTitle("Select your GDAL grids (e.g., GMT, NetCDF, GTiFF, etc.)")
         self.setMinimumWidth(400)
 
