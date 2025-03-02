@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QLineEdit, QCheckBox, QHBoxLayout)
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QLineEdit, QCheckBox, QHBoxLayout,
+                             QMessageBox)
 from PyQt5.QtCore import Qt
 from qgis.core import QgsProject, Qgis, QgsRasterLayer
 
@@ -94,8 +95,12 @@ class SelectionDialog(QDialog):
         self.close()
 
     def use_last_settings(self):
-        if self.flowline_module.use_last_settings():
-            self.close()
+        if self.flowline_module:
+            if self.flowline_module.selected_raster_1 and self.flowline_module.selected_raster_2:
+                if self.flowline_module.use_last_settings():
+                    self.close()
+            else:
+                QMessageBox.information(None, "No Previous Settings", "Please select input parameters.")
 
     def update_from_dialog(self):
         index_1 = self.layer_box_1.currentIndex()
