@@ -131,12 +131,30 @@ class Grd2Stream:
             text="Calculate Flowlines",
             callback=self.flowline_module.open_selection_dialog
         )
+        self.last_settings_action = self.add_action(
+            icon="icon_last_settings.png",
+            text="Use Last Settings",
+            callback=self.flowline_module.use_last_settings
+        )
+        self.manage_presets_action = self.add_action(
+            icon="icon_presets.png",
+            text="Manage Flowline Presets",
+            callback=self.flowline_module.manage_presets
+        )
 
     def unload(self):
         """Properly unloads the plugin, ensuring no lingering instances."""
         if self.flowline_action:
             self.flowline_action.triggered.disconnect()
             self.toolbar.removeAction(self.flowline_action)
+        if hasattr(self, 'last_settings_action'):
+            self.last_settings_action.triggered.disconnect()
+            self.toolbar.removeAction(self.last_settings_action)
+        if hasattr(self, 'manage_presets_action'):
+            self.manage_presets_action.triggered.disconnect()
+            self.toolbar.removeAction(self.manage_presets_action)
+        if hasattr(self, 'preset_manager'):
+            del self.preset_manager
 
         if self.toolbar:
             del self.toolbar

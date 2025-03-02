@@ -2,19 +2,23 @@ import os
 import platform
 import subprocess
 import tempfile
-import sys
 
 from qgis._core import QgsFeature, QgsGeometry, QgsPointXY
 from qgis.core import QgsVectorLayer, QgsProject, Qgis, QgsRasterLayer
 from qgis.gui import QgsMapToolEmitPoint
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QLineEdit, QCheckBox, QDoubleSpinBox, QMessageBox, QProgressDialog, QApplication
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QPushButton, QCheckBox, QMessageBox, QProgressDialog, QApplication)
 from PyQt5.QtCore import Qt
+
+from .preset_manager import PresetManager, PresetDialog, SavePresetDialog
+from .selection_dialog import SelectionDialog
 
 class FlowlineModule:
     def __init__(self, iface):
         self.iface = iface
         self.selected_raster_1 = None
         self.selected_raster_2 = None
+        self.selected_band_1 = 1
+        self.selected_band_2 = 1
         self.coordinate = None
         self.map_tool = None
         self.backward_steps = False
@@ -29,6 +33,9 @@ class FlowlineModule:
         else:
             self.conda_path = os.path.join(self.miniconda_path, "Scripts", "conda.exe")
         self.configure_environment()
+        plugin_dir = os.path.dirname(os.path.dirname(__file__))
+        self.preset_manager = PresetManager(plugin_dir)
+        self.last_used_preset = None
 
     def show_download_popup(self, message="Downloading..."):
         self.progress_dialog = QProgressDialog(message, None, 0, 0, self.iface.mainWindow())
@@ -48,6 +55,77 @@ class FlowlineModule:
         os.environ["PATH"] = f"{self.miniconda_path}/bin:" + os.environ["PATH"]
         print(f"Updated System PATH: {os.environ['PATH']}")
         print(f"Using Conda from: {self.conda_path}")
+
+    def save_current_settings(self):
+        if not self.selected_raster_1 or not self.selected_raster_2:
+            QMessageBox.warning(None,"Incomplete Preset","Please select input rasters before saving preset.")
+            return
+        preset_data = {
+            'raster_1_source': self.selected_raster_1.source(),
+            'raster_1_name': self.selected_raster_1.name(),
+            'raster_2_source': self.selected_raster_2.source(),
+            'raster_2_name': self.selected_raster_2.name(),
+            'band_1': self.selected_band_1,
+            'band_2': self.selected_band_2,
+            'backward_steps': self.backward_steps,
+            'step_size': self.step_size,
+            'max_integration_time': self.max_integration_time,
+            'max_steps': self.max_steps,
+            'output_format': self.output_format
+        }
+        dialog = SavePresetDialog(self.preset_manager, preset_data)
+        dialog.exec_()
+
+    def manage_presets(self):
+        dialog = PresetDialog(self.preset_manager)
+        if dialog.exec_() == QDialog.Accepted:
+            preset_name = getattr(dialog, 'selected_preset', None)
+            if preset_name:
+                self.load_preset(preset_name)
+
+    def load_preset(self, preset_name):
+        preset_data = self.preset_manager.get_preset(preset_name)
+        if not preset_data:
+            QMessageBox.warning(None, "Error", f"Could not load preset '{preset_name}'.")
+            return False
+        try:
+            raster_1_source = preset_data.get('raster_1_source')
+            raster_2_source = preset_data.get('raster_2_source')
+            if not os.path.exists(raster_1_source.split('?')[0]) or not os.path.exists(raster_2_source.split('?')[0]):
+                QMessageBox.warning(
+                    None,
+                    "Missing Files",
+                    "One or both of the raster files in this preset no longer exist at the specified location."
+                )
+                return False
+            self.selected_raster_1 = QgsRasterLayer(raster_1_source, preset_data.get('raster_1_name'))
+            self.selected_raster_2 = QgsRasterLayer(raster_2_source, preset_data.get('raster_2_name'))
+            if not self.selected_raster_1.isValid() or not self.selected_raster_2.isValid():
+                QMessageBox.warning(
+                    None,
+                    "Invalid Layers",
+                    "Could not load raster layers from preset. The files may have moved or changed."
+                )
+                return False
+            self.selected_band_1 = preset_data.get('band_1', 1)
+            self.selected_band_2 = preset_data.get('band_2', 1)
+            self.backward_steps = preset_data.get('backward_steps', False)
+            self.step_size = preset_data.get('step_size')
+            self.max_integration_time = preset_data.get('max_integration_time')
+            self.max_steps = preset_data.get('max_steps')
+            self.output_format = preset_data.get('output_format')
+            self.last_used_preset = preset_name
+            self.iface.messageBar().pushMessage(
+                "Success",
+                f"Preset '{preset_name}' loaded successfully. Click on the map to select a coordinate.",
+                level=Qgis.Info,
+                duration=5
+            )
+            self.prompt_for_coordinate()
+            return True
+        except Exception as e:
+            QMessageBox.warning(None, "Error", f"Error loading preset: {str(e)}")
+            return False
 
     def install_miniconda(self):
         if os.path.exists(self.conda_path):
@@ -234,6 +312,8 @@ class FlowlineModule:
             self.max_steps = dialog.max_steps
             self.output_format = dialog.output_format
 
+            self.last_used_preset = None
+
             self.iface.messageBar().pushMessage(
                 "Info",
                 f"Selected rasters: {self.selected_raster_1.name()}, {self.selected_raster_2.name()} (Bands: {self.selected_band_1}, {self.selected_band_2})",
@@ -241,6 +321,24 @@ class FlowlineModule:
                 duration=5
             )
             self.prompt_for_coordinate()
+
+    def use_last_settings(self):
+        if self.last_used_preset:
+            return self.load_preset(self.last_used_preset)
+        elif self.selected_raster_1 and self.selected_raster_2:
+            self.iface.messageBar().pushMessage(
+                "Info",
+                f"Using last settings. Selected rasters: {self.selected_raster_1.name()}, {self.selected_raster_2.name()}"
+                f" (Bands: {self.selected_band_1}, {self.selected_band_2})",
+                level=Qgis.Info,
+                duration=5
+            )
+            self.prompt_for_coordinate()
+            return True
+        else:
+            QMessageBox.information(None,"No Previous Settings",
+                                    "No previous settings found. Please select input parameters.")
+            return self.open_selection_dialog()
 
     def prompt_for_coordinate(self):
         if self.map_tool:
@@ -253,7 +351,7 @@ class FlowlineModule:
         self.iface.mapCanvas().setMapTool(self.map_tool)
         self.iface.messageBar().pushMessage(
             "Info",
-            "Click on the map to select a coordinate for the grd2stream command.",
+            "Click on the map to select a seed point for your flowline.",
             level=Qgis.Info,
             duration=5
         )
@@ -420,126 +518,3 @@ class FlowlineModule:
             self.iface.messageBar().pushMessage(
                 "Error", f"Failed to load output as layer: {e}", level=Qgis.Critical, duration=5
             )
-
-class SelectionDialog(QDialog):
-    def __init__(self, iface, parent=None):
-        super().__init__(parent)
-        self.iface = iface
-        self.setWindowTitle("Select your GDAL grids (e.g., GMT, NetCDF, GTiFF, etc.)")
-        self.setMinimumWidth(400)
-
-        self.selected_raster_1 = None
-        self.selected_raster_2 = None
-        self.backward_steps = False
-        self.step_size = None
-        self.max_integration_time = None
-        self.max_steps = None
-        self.output_format = None
-
-        layout = QVBoxLayout()
-
-        layout.addWidget(QLabel("Select the 1st grid layer:"))
-        self.layer_box_1 = QComboBox()
-        layout.addWidget(self.layer_box_1)
-        layout.addWidget(QLabel("Select the 2nd grid layer:"))
-        self.layer_box_2 = QComboBox()
-        layout.addWidget(self.layer_box_2)
-
-        self.populate_layers()
-
-        self.backward_checkbox = QCheckBox("Backward Steps (yes/no)")
-        layout.addWidget(self.backward_checkbox)
-
-        layout.addWidget(QLabel("Output Format:"))
-        self.output_format_box = QComboBox()
-        self.output_format_box.addItem("x  y  dist  (default)", None)
-        self.output_format_box.addItem("x  y  dist  v_x  v_y", "-l")
-        self.output_format_box.addItem("x  y  dist  v_x  v_y  time", "-t")
-        layout.addWidget(self.output_format_box)
-
-        layout.addWidget(QLabel("<b>Parameters:</b>"))
-
-        self.manual_step_checkbox = QCheckBox("Manually set Step Size (in m)")
-        layout.addWidget(self.manual_step_checkbox)
-        self.manual_step_checkbox.stateChanged.connect(self.toggle_step_size_input)
-        self.step_size_input = QLineEdit()
-        self.step_size_input.setPlaceholderText("default: Δ = min(x_inc, y_inc) / 5")
-        self.step_size_input.setEnabled(False)
-        layout.addWidget(self.step_size_input)
-
-        self.max_steps_input = QLineEdit()
-        self.max_steps_input.setPlaceholderText("default: 10,000")
-        layout.addWidget(QLabel("Maximum Number of Steps:"))
-        layout.addWidget(self.max_steps_input)
-
-        self.max_time_input = QLineEdit()
-        self.max_time_input.setPlaceholderText("default: /")
-        layout.addWidget(QLabel("Maximum Integration Time (in s):"))
-        layout.addWidget(self.max_time_input)
-
-        self.ok_button = QPushButton("OK")
-        self.ok_button.clicked.connect(self.accept)
-        self.cancel_button = QPushButton("Cancel")
-        self.cancel_button.clicked.connect(self.reject)
-        layout.addWidget(self.ok_button)
-        layout.addWidget(self.cancel_button)
-
-        self.setLayout(layout)
-
-    def toggle_step_size_input(self, state):
-        if state == Qt.Checked:
-            self.step_size_input.setEnabled(True)
-            self.step_size_input.setStyleSheet("color: black;")
-        else:
-            self.step_size_input.setEnabled(False)
-            self.step_size_input.clear()
-            self.step_size_input.setStyleSheet("color: gray;")
-
-    def populate_layers(self):
-        layers = QgsProject.instance().mapLayers().values()
-        raster_layers = [layer for layer in layers if isinstance(layer, QgsRasterLayer)]
-        for layer in raster_layers:
-            band_count = layer.bandCount()
-            if band_count > 1:
-                for band in range(1, band_count + 1):
-                    self.layer_box_1.addItem(f"{layer.name()} - Band {band}", (layer, band))
-                    self.layer_box_2.addItem(f"{layer.name()} - Band {band}", (layer, band))
-            else:
-                self.layer_box_1.addItem(f"{layer.name()} - Band 1", (layer, 1))
-                self.layer_box_2.addItem(f"{layer.name()} - Band 1", (layer, 1))
-
-    def accept(self):
-        index_1 = self.layer_box_1.currentIndex()
-        index_2 = self.layer_box_2.currentIndex()
-
-        selected_1 = self.layer_box_1.itemData(index_1)
-        selected_2 = self.layer_box_2.itemData(index_2)
-
-        if isinstance(selected_1, tuple):
-            self.selected_raster_1, self.selected_band_1 = selected_1
-        else:
-            self.selected_raster_1 = selected_1
-            self.selected_band_1 = 1
-
-        if isinstance(selected_2, tuple):
-            self.selected_raster_2, self.selected_band_2 = selected_2
-        else:
-            self.selected_raster_2 = selected_2
-            self.selected_band_2 = 1
-
-        if self.selected_raster_1 == self.selected_raster_2 and self.selected_band_1 == self.selected_band_2:
-            self.iface.messageBar().pushMessage(
-                "Error",
-                "Please select two different raster layers/bands.",
-                level=Qgis.Critical,
-                duration=5
-            )
-            return
-
-        self.backward_steps = self.backward_checkbox.isChecked()
-        self.step_size = float(self.step_size_input.text()) if self.manual_step_checkbox.isChecked() and self.step_size_input.text() else None
-        self.max_steps = int(self.max_steps_input.text()) if self.max_steps_input.text() else None
-        self.max_integration_time = float(self.max_time_input.text()) if self.max_time_input.text() else None
-        self.output_format = self.output_format_box.currentData()
-
-        super().accept()
