@@ -89,24 +89,10 @@ class FlowlineModule:
         print("Setting up Conda environment...")
         self.show_download_popup("Setting up Conda environment & installing GMT6...")
         try:
-            if self.system in ["Linux", "Darwin"]:
-                try:
-                    subprocess.run([self.conda_path, "config", "--add", "channels", "conda-forge"], check=True)
-                    subprocess.run([self.conda_path, "config", "--set", "channel_priority", "strict"], check=True)
-                    subprocess.run([self.conda_path, "create", "-y", "-n", "GMT6", "gmt=6*", "gdal", "hdf5", "netcdf4"], check=True)
-                    print("Conda environment 'GMT6' is now set up!")
-                except subprocess.CalledProcessError as e:
-                    print(f"Error setting up Conda environment: {e}")
-            elif self.system == "Windows":
-                conda_commands = (
-                    "$env:Path = \"$env:USERPROFILE\\miniconda3\\Scripts;$env:USERPROFILE\\miniconda3\\Library\\bin;$env:Path\"; "
-                    "conda init powershell; "
-                    "conda config --add channels conda-forge; "
-                    "conda config --set channel_priority strict; "
-                    "conda create -y -n GMT6 gmt=6* gdal hdf5 netcdf4"
-                )
-                subprocess.run(["powershell", "-Command", conda_commands], check=True)
-            print("Conda environment is now set up!")
+            subprocess.run([self.conda_path, "config", "--add", "channels", "conda-forge"], check=True)
+            subprocess.run([self.conda_path, "config", "--set", "channel_priority", "strict"], check=True)
+            subprocess.run([self.conda_path, "create", "-y", "-n", "GMT6", "gmt=6*", "gdal", "hdf5", "netcdf4"], check=True)
+            print("Conda environment 'GMT6' is now set up!")
         except subprocess.CalledProcessError as e:
             print(f"Error during GMT6 installation: {e}")
         finally:
