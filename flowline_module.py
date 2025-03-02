@@ -293,12 +293,6 @@ class FlowlineModule:
                                 duration=5
                             )
                             return
-                self.iface.messageBar().pushMessage(
-                    "Success",
-                    "grd2stream is installed!",
-                    level=Qgis.Info,
-                    duration=5
-                )
             except Exception as e:
                 self.iface.messageBar().pushMessage(
                     "Error",
