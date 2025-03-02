@@ -58,11 +58,11 @@ class FlowlineModule:
         try:
             if self.system == "Windows":
                 command = (
-                    "wget \"https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe\" -outfile \".\\miniconda.exe\"; "
-                    "Start-Process -FilePath \".\\miniconda.exe\" -ArgumentList \"/S\" -Wait; "
-                    "del .\\miniconda.exe"
+                    'curl -o miniconda.exe https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe && '
+                    'miniconda.exe /S && '
+                    'del miniconda.exe'
                 )
-                subprocess.run(["powershell", "-Command", command], check=True)
+                subprocess.run(["cmd", "/c", command], check=True)
             elif self.system in ["Linux", "Darwin"]:
                 if self.system == "Linux":
                     url = "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
