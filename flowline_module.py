@@ -52,8 +52,11 @@ class FlowlineModule:
     def configure_environment(self):
         os.environ.pop("PYTHONHOME", None)
         os.environ["CONDA_PREFIX"] = self.miniconda_path
-        os.environ["PATH"] = f"{self.miniconda_path}/bin:" + os.environ["PATH"]
-        print(f"Updated System PATH: {os.environ['PATH']}")
+        miniconda_bin = f"{self.miniconda_path}/bin"
+        current_path = os.environ.get("PATH", "")
+        if miniconda_bin not in current_path.split(os.pathsep):
+            os.environ["PATH"] = f"{miniconda_bin}:{current_path}"
+            print(f"Updated System PATH: {os.environ['PATH']}")
         print(f"Using Conda from: {self.conda_path}")
 
     def save_current_settings(self):
