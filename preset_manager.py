@@ -6,10 +6,7 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBo
 class PresetManager:
     def __init__(self, plugin_dir):
         self.plugin_dir = plugin_dir
-        self.presets_dir = os.path.join(plugin_dir, "presets")
-        if not os.path.exists(self.presets_dir):
-            os.makedirs(self.presets_dir)
-        self.presets_file = os.path.join(self.presets_dir, "flowline_presets.json")
+        self.presets_file = os.path.join(self.plugin_dir, "grd2stream_presets.json")
         self.presets = self.load_presets()
 
     def load_presets(self):

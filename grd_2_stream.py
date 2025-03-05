@@ -22,7 +22,6 @@
  ******************************************************************************/
 """
 import os
-import stat
 
 from PyQt5.QtWidgets import QWidget
 from qgis.PyQt.QtGui import QIcon
@@ -153,8 +152,6 @@ class Grd2Stream:
         if hasattr(self, 'manage_presets_action'):
             self.manage_presets_action.triggered.disconnect()
             self.toolbar.removeAction(self.manage_presets_action)
-        if hasattr(self, 'preset_manager'):
-            del self.preset_manager
 
         if self.toolbar:
             del self.toolbar
