@@ -35,6 +35,7 @@ class FlowlineModule:
         plugin_dir = os.path.dirname(os.path.dirname(__file__))
         self.preset_manager = PresetManager(plugin_dir)
         self.last_used_preset = None
+        self.last_executed_command = None
 
     def show_download_popup(self, message="Downloading..."):
         self.progress_dialog = QProgressDialog(message, None, 0, 0, self.iface.mainWindow())
@@ -90,13 +91,6 @@ class FlowlineModule:
         try:
             raster_1_source = preset_data.get('raster_1_source')
             raster_2_source = preset_data.get('raster_2_source')
-            if not os.path.exists(raster_1_source.split('?')[0]) or not os.path.exists(raster_2_source.split('?')[0]):
-                QMessageBox.warning(
-                    None,
-                    "Missing Files",
-                    "One or both of the raster files in this preset no longer exist at the specified location."
-                )
-                return False
             self.selected_raster_1 = QgsRasterLayer(raster_1_source, preset_data.get('raster_1_name'))
             self.selected_raster_2 = QgsRasterLayer(raster_2_source, preset_data.get('raster_2_name'))
             if not self.selected_raster_1.isValid() or not self.selected_raster_2.isValid():
@@ -114,6 +108,37 @@ class FlowlineModule:
             self.max_steps = preset_data.get('max_steps')
             self.output_format = preset_data.get('output_format')
             self.last_used_preset = preset_name
+
+            gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
+            grd2stream_path = os.path.join(gmt6_env_path, "bin", "grd2stream")
+            raster_path_1 = self.selected_raster_1.source()
+            raster_path_2 = self.selected_raster_2.source()
+            for prefix in ["NETCDF:", "HDF5:", "GRIB:"]:
+                if raster_path_1.startswith(prefix):
+                    raster_path_1 = raster_path_1[len(prefix):].strip()
+                if raster_path_2.startswith(prefix):
+                    raster_path_2 = raster_path_2[len(prefix):].strip()
+            if ":" in raster_path_1:
+                file_path, variable = raster_path_1.rsplit(":", 1)
+                raster_path_1 = f"{file_path}?{variable}"
+            if ":" in raster_path_2:
+                file_path, variable = raster_path_2.rsplit(":", 1)
+                raster_path_2 = f"{file_path}?{variable}"
+            cmd = f'"{self.conda_path}" run -n GMT6 "{grd2stream_path}" "{raster_path_1}" "{raster_path_2}"'
+            if self.backward_steps:
+                cmd += " -b"
+            if self.step_size:
+                cmd += f" -d {self.step_size}"
+            if self.max_integration_time:
+                cmd += f" -T {self.max_integration_time}"
+            if self.max_steps:
+                cmd += f" -n {self.max_steps}"
+            if self.output_format:
+                cmd += f" {self.output_format}"
+            cmd += ' -f "<seed_file_path>"'
+            self.preset_command_template = cmd
+            print(f"Preset Command Template: {cmd}")
+
             self.iface.messageBar().pushMessage(
                 "Success",
                 f"Preset '{preset_name}' loaded successfully. Click on the map to select a coordinate.",
@@ -290,7 +315,6 @@ class FlowlineModule:
                 self.install_grd2stream()
 
     def open_selection_dialog(self):
-
         gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
         grd2stream_executable = os.path.join(gmt6_env_path, "bin", "grd2stream")
         if self.system == "Windows":
@@ -367,9 +391,9 @@ class FlowlineModule:
             level=Qgis.Info,
             duration=5
         )
-        self.run_grd2stream()
+        self.run_grd2stream(verbose=True)
 
-    def run_grd2stream(self):
+    def run_grd2stream(self, verbose=False):
         try:
             try:
                 gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
@@ -410,37 +434,41 @@ class FlowlineModule:
                 seed_file_path = temp_file.name
                 temp_file.write(f"{x} {y}\n")
 
-            gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
-            grd2stream_path = os.path.join(gmt6_env_path, "bin", "grd2stream")
+            if hasattr(self, 'preset_command_template'):
+                cmd = self.preset_command_template.replace('<seed_file_path>', seed_file_path)
+            else:
+                gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
+                grd2stream_path = os.path.join(gmt6_env_path, "bin", "grd2stream")
 
-            raster_path_1 = self.selected_raster_1.source()
-            raster_path_2 = self.selected_raster_2.source()
+                raster_path_1 = self.selected_raster_1.source()
+                raster_path_2 = self.selected_raster_2.source()
 
-            for prefix in ["NETCDF:", "HDF5:", "GRIB:"]:  # Extend this list if needed
-                if raster_path_1.startswith(prefix):
-                    raster_path_1 = raster_path_1[len(prefix):].strip()
-                if raster_path_2.startswith(prefix):
-                    raster_path_2 = raster_path_2[len(prefix):].strip()
+                for prefix in ["NETCDF:", "HDF5:", "GRIB:"]:  # Extend this list if needed
+                    if raster_path_1.startswith(prefix):
+                        raster_path_1 = raster_path_1[len(prefix):].strip()
+                    if raster_path_2.startswith(prefix):
+                        raster_path_2 = raster_path_2[len(prefix):].strip()
 
-            if ":" in raster_path_1:
-                file_path, variable = raster_path_1.rsplit(":", 1)
-                raster_path_1 = f"{file_path}?{variable}"
-            if ":" in raster_path_2:
-                file_path, variable = raster_path_2.rsplit(":", 1)
-                raster_path_2 = f"{file_path}?{variable}"
+                if ":" in raster_path_1:
+                    file_path, variable = raster_path_1.rsplit(":", 1)
+                    raster_path_1 = f"{file_path}?{variable}"
+                if ":" in raster_path_2:
+                    file_path, variable = raster_path_2.rsplit(":", 1)
+                    raster_path_2 = f"{file_path}?{variable}"
 
-            cmd = f'"{self.conda_path}" run -n GMT6 "{grd2stream_path}" "{raster_path_1}" "{raster_path_2}" -f "{seed_file_path}"'
-            if self.backward_steps:
-                cmd += " -b"
-            if self.step_size:
-                cmd += f" -d {self.step_size}"
-            if self.max_integration_time:
-                cmd += f" -T {self.max_integration_time}"
-            if self.max_steps:
-                cmd += f" -n {self.max_steps}"
-            if self.output_format:
-                cmd += f" {self.output_format}"
+                cmd = f'"{self.conda_path}" run -n GMT6 "{grd2stream_path}" "{raster_path_1}" "{raster_path_2}" -f "{seed_file_path}"'
+                if self.backward_steps:
+                    cmd += " -b"
+                if self.step_size:
+                    cmd += f" -d {self.step_size}"
+                if self.max_integration_time:
+                    cmd += f" -T {self.max_integration_time}"
+                if self.max_steps:
+                    cmd += f" -n {self.max_steps}"
+                if self.output_format:
+                    cmd += f" {self.output_format}"
 
+            self.last_executed_command = cmd
             print(f"Executing Command: {cmd}")
             result = subprocess.run(
                 ["bash", "-c", cmd],
@@ -453,7 +481,8 @@ class FlowlineModule:
             if result.returncode != 0:
                 raise RuntimeError(f"Command failed: {result.stderr}")
 
-            print("Raw Output:\n", result.stdout)
+            if verbose or result.returncode == 0:
+                print("Raw Output:\n", result.stdout)
             self.load_streamline_from_output(result.stdout)
 
             self.iface.messageBar().pushMessage(
