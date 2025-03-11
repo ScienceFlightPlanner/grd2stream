@@ -5,12 +5,12 @@
 [general]
 name=grd2stream
 qgisMinimumVersion=3.0
-description=flowline generation derived from velocity grids
-version=0.9
-author=Thomas Kleiner, Abraham Wondimu
+description=flowline generation from gridded velocity fields
+version=1.0
+author=Thomas Kleiner, Abraham Wondimu, Anna Menshikova, Maxim Poliakov, Simon Povh
 email=scienceflightplanner@gmail.com
 
-about=This plugin allows to comfortably generate multiple flowlines from velocity grids by selecting seed points (using Runge-Kutta integration methods). It utilizes GMT6 to ensure compatibility with all GDAL file formats! The plugin installs GMT6 in an isolated Conda environment, which does not affect any existing native GMT6 installations on your system.
+about=This plugin enables the seamless generation of multiple flowlines from velocity grids by selecting seed points – using Runge-Kutta integration methods. Powered by GMT6, it ensures compatibility with all GDAL file formats!
 
 tracker=https://github.com/ScienceFlightPlanner/grd2stream/issues
 repository=https://github.com/ScienceFlightPlanner/grd2stream
@@ -23,9 +23,9 @@ hasProcessingProvider=no
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=python, velocity field, grid, flowline
+tags=velocity field, grid, flowline
 
-homepage=https://github.com/tkleiner/grd2stream
+homepage=https://scienceflightplanner.github.io/grd2stream
 category=Analysis
 icon=icon.png
 # experimental flag

@@ -9,7 +9,7 @@ from qgis.gui import QgsMapToolEmitPoint
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QPushButton, QCheckBox, QMessageBox, QProgressDialog, QApplication)
 from PyQt5.QtCore import Qt
 
-from .preset_manager import PresetManager, PresetDialog, SavePresetDialog
+from .dialog_preset import PresetManager, PresetDialog, SavePresetDialog
 
 class FlowlineModule:
     def __init__(self, iface):
@@ -325,7 +325,7 @@ class FlowlineModule:
         if not os.path.exists(grd2stream_executable):
             self.prompt_missing_installation()
 
-        from .selection_dialog import SelectionDialog
+        from .dialog_selection import SelectionDialog
         dialog = SelectionDialog(self.iface, self)
 
         if dialog.exec_():
