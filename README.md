@@ -30,4 +30,4 @@ The `grd2stream` QGIS plugin allows to comfortably **generate multiple flowlines
 - [**grd2stream**](https://github.com/tkleiner/grd2stream) (by [Thomas Kleiner](https://github.com/tkleiner)):
    - CLI tool that calculates stream lines from gridded velocity fields using Runge-Kutta integration methods
    - licensed under the BSD 3-Clause License
-     - see the full [LICENSE](./libs/LICENSE.txt) text for details
+     - see the full [LICENSE](lib/LICENSE.txt) text for details
