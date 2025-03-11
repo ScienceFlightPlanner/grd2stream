@@ -23,9 +23,10 @@
 """
 import os
 
-from PyQt5.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import QWidget
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
+from qgis._core import QgsSettings
 
 # Initialize Qt resources from file resources.py (DON'T DELETE IT)
 from .resources import *
@@ -34,8 +35,10 @@ from .grd_2_stream_dialog import Grd2StreamDialog
 import os.path
 
 from .flowline_module import FlowlineModule
+from .help_widget import add_help_menu_action
 
 plugin_instance = None
+
 
 class Grd2Stream:
     """QGIS Plugin Implementation."""
@@ -61,6 +64,7 @@ class Grd2Stream:
         self.toolbar.setObjectName("grd2stream")
         self.flowline_module = FlowlineModule(iface)
         self.flowline_action = None
+        self.help_action = None
 
     def add_action(
         self,
@@ -125,33 +129,26 @@ class Grd2Stream:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
+        if QgsSettings().value("UI/UITheme", "default") == "default":
+            icon_path = "flowline.png"
+        else:
+            icon_path = "flowline_darkmode.png"
         self.flowline_action = self.add_action(
-            icon="flowline.png",
+            icon=icon_path,
             text="Calculate Flowlines",
             callback=self.flowline_module.open_selection_dialog
         )
-        self.last_settings_action = self.add_action(
-            icon="icon_last_settings.png",
-            text="Use Last Settings",
-            callback=self.flowline_module.use_last_settings
-        )
-        self.manage_presets_action = self.add_action(
-            icon="icon_presets.png",
-            text="Manage Flowline Presets",
-            callback=self.flowline_module.manage_presets
-        )
+        self.help_action = add_help_menu_action(self.iface, self.plugin_dir)
 
     def unload(self):
         """Properly unloads the plugin, ensuring no lingering instances."""
         if self.flowline_action:
             self.flowline_action.triggered.disconnect()
             self.toolbar.removeAction(self.flowline_action)
-        if hasattr(self, 'last_settings_action'):
-            self.last_settings_action.triggered.disconnect()
-            self.toolbar.removeAction(self.last_settings_action)
-        if hasattr(self, 'manage_presets_action'):
-            self.manage_presets_action.triggered.disconnect()
-            self.toolbar.removeAction(self.manage_presets_action)
+
+        if hasattr(self, 'help_action'):
+            self.iface.pluginHelpMenu().removeAction(self.help_action)
+            self.help_action = None
 
         if self.toolbar:
             del self.toolbar
