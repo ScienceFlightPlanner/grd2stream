@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>grd2stream Manual</title>
+    <title>grd2stream Documentation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            max-width: 800px;
+            max-width: 960px;
             margin: 0 auto;
             padding: 20px;
             color: #333;
@@ -21,6 +21,8 @@
         h2 {
             color: #2980B9;
             margin-top: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
         h3 {
             color: #3498DB;
@@ -76,162 +78,218 @@
     </style>
 </head>
 <body>
-    <h1>grd2stream QGIS Plugin - User Manual</h1>
+    <h1>grd2stream – QGIS Plugin</h1>
 
     <h2>Table of Contents</h2>
     <ul>
         <li><a href="#overview">Overview</a></li>
-        <li><a href="#installation">Installation</a></li>
-        <li><a href="#basic-usage">Basic Usage</a></li>
-        <li><a href="#parameters">Parameters</a></li>
+        <li><a href="#installation">Installation & Requirements</a></li>
+        <li><a href="#platform-support">Platform Support</a></li>
+        <li><a href="#architecture">Technical Architecture</a></li>
+        <li><a href="#usage">Using the Plugin</a></li>
         <li><a href="#presets">Working with Presets</a></li>
         <li><a href="#technical-details">Technical Details</a></li>
         <li><a href="#troubleshooting">Troubleshooting</a></li>
+        <li><a href="#development">Development Information</a></li>
+        <li><a href="#license">License Information</a></li>
     </ul>
 
     <h2 id="overview">Overview</h2>
     <p>
-        The grd2stream QGIS Plugin allows you to extract and visualize vector flowlines from raster gradient fields.
-        This is particularly useful for analyzing fluid flow directions, topographic gradients,
-        and other directional vector data represented in raster format.
+        The grd2stream QGIS plugin allows users to comfortably generate multiple flowlines from velocity grids by selecting seed points.
+        This plugin utilizes GMT6 (Generic Mapping Tools) to ensure compatibility with all GDAL file formats.
     </p>
 
-    <div class="note">
-        <strong>Note:</strong> This plugin requires two raster datasets representing the X and Y components of a
-        gradient field. These can be derived from a single field (like a DEM) or can represent measured
-        vector components.
-    </div>
-
-    <h2 id="installation">Installation</h2>
     <p>
-        The grd2stream QGIS Plugin has specific requirements for some of its functionality:
+        The core functionality is based on the <code>grd2stream</code> command-line utility, which calculates streamlines from gridded velocity
+        fields using Runge-Kutta integration methods.
     </p>
+
+    <h3>Key Features</h3>
+    <ul>
+        <li>Generate flowlines from any GDAL-compatible X and Y velocity component rasters</li>
+        <li>Interactive seed point selection via map clicks or manual coordinate entry</li>
+        <li>Configurable integration parameters (step size, max steps, etc.)</li>
+        <li>Save and load parameter presets for repeated use</li>
+        <li>Isolated GMT6 environment that doesn't interfere with existing installations</li>
+    </ul>
+
+    <h2 id="installation">Installation & Requirements</h2>
+
+    <h3>QGIS Plugin Installation</h3>
+    <ol>
+        <li>Open QGIS</li>
+        <li>Go to Plugins → Manage and Install Plugins</li>
+        <li>Search for "grd2stream"</li>
+        <li>Click "Install Plugin"</li>
+    </ol>
 
     <h3>Dependencies</h3>
-    <ul>
-        <li>GMT (Generic Mapping Tools) 6.x</li>
-        <li>GDAL library</li>
-        <li>grd2stream utility</li>
-    </ul>
-
     <p>
-        The plugin can help you install these dependencies if they are not already available on your system.
-    </p>
-
-    <h3>Platform-Specific Installation Notes</h3>
-
-    <h4>Windows</h4>
-    <p>
-        On Windows, the plugin uses WSL (Windows Subsystem for Linux) to run the GMT and grd2stream utilities. If not already installed, you'll be prompted to install WSL and the necessary dependencies through the plugin interface.
-    </p>
-
-    <h4>Linux and macOS</h4>
-    <p>
-        On Linux and macOS, the plugin can install and manage a Miniconda environment with the necessary dependencies. The environment will be created in your home directory under <code>~/miniconda3</code>.
-    </p>
-
-    <h3>Installation Process</h3>
-    <ol>
-        <li>Install the plugin through the QGIS Plugin Manager</li>
-        <li>When first using the plugin, it will check for dependencies</li>
-        <li>If dependencies are missing, you'll be prompted to install them</li>
-        <li>Follow the on-screen instructions to complete the installation</li>
-    </ol>
-
-    <h2 id="basic-usage">Basic Usage</h2>
-
-    <h3>Extracting Flowlines</h3>
-    <ol>
-        <li>Click the grd2stream plugin button in the QGIS toolbar</li>
-        <li>Select your two input raster layers representing X and Y gradient components</li>
-        <li>Set parameters for the flowline extraction</li>
-        <li>Choose a method for selecting the seed point (map click or manual coordinates)</li>
-        <li>Execute the flowline extraction</li>
-    </ol>
-
-    <p>
-        The plugin will generate a vector layer with the extracted flowline, which will be
-        automatically added to your QGIS project.
-    </p>
-
-    <h3>Choosing Input Rasters</h3>
-    <p>
-        The plugin requires two raster layers:
+        The plugin requires:
     </p>
     <ul>
-        <li>The first raster should represent the X (east-west) component of the gradient field</li>
-        <li>The second raster should represent the Y (north-south) component of the gradient field</li>
+        <li>QGIS 3.0 or higher</li>
+        <li>GMT6 (Generic Mapping Tools version 6)</li>
+        <li>grd2stream command-line utility</li>
     </ul>
 
-    <p>
-        If your rasters have multiple bands, you can specify which band to use for each raster.
-    </p>
+    <div class="note">
+        <strong>Note:</strong> On Linux and macOS, the plugin can automatically install these dependencies in an isolated Miniconda environment.
+    </div>
 
-    <h3>Selecting a Seed Point</h3>
-    <p>
-        After configuring the parameters, you'll be prompted to select a seed point for the flowline. You can:
-    </p>
-    <ul>
-        <li><strong>Click on the map</strong>: Interactively select a point on the map view</li>
-        <li><strong>Enter coordinates manually</strong>: Enter exact X and Y coordinates in the current project CRS</li>
-    </ul>
+    <h2 id="platform-support">Platform Support</h2>
 
-    <h2 id="parameters">Parameters</h2>
-
-    <h3>Main Settings</h3>
+    <h3>Current Status</h3>
     <table>
         <tr>
-            <th>Parameter</th>
-            <th>Description</th>
-            <th>Default</th>
+            <th>Platform</th>
+            <th>Status</th>
+            <th>Notes</th>
         </tr>
         <tr>
-            <td>Backward Steps</td>
-            <td>Enable to trace the flowline in the upstream direction</td>
-            <td>Disabled</td>
+            <td>Linux</td>
+            <td>✅ Fully Supported</td>
+            <td>Automatic installation of dependencies via Miniconda</td>
         </tr>
         <tr>
-            <td>Step Size</td>
-            <td>Distance increment for each step of the flowline integration</td>
-            <td>min(x_inc, y_inc) / 5</td>
+            <td>macOS</td>
+            <td>✅ Fully Supported</td>
+            <td>Automatic installation of dependencies via Miniconda</td>
         </tr>
         <tr>
-            <td>Maximum Steps</td>
-            <td>Maximum number of steps to take when tracing the flowline</td>
-            <td>10,000</td>
-        </tr>
-        <tr>
-            <td>Maximum Integration Time</td>
-            <td>Maximum time allowed for the flowline integration process</td>
-            <td>Unlimited</td>
-        </tr>
-        <tr>
-            <td>Output Format</td>
-            <td>Format of the flowline data</td>
-            <td>x y dist</td>
+            <td>Windows</td>
+            <td>🚧 In Development</td>
+            <td>Currently only planning/parameter configuration available. Command execution not yet supported.</td>
         </tr>
     </table>
 
+    <h3>Windows Limitations</h3>
+    <p>
+        On Windows, the plugin currently cannot execute the grd2stream command. However, you can still:
+    </p>
+    <ul>
+        <li>Configure all parameters and settings</li>
+        <li>Save and manage presets</li>
+        <li>View the command that would be executed (for reference)</li>
+    </ul>
+
+    <p>
+        Full Windows support is being developed and will be available in a future update.
+    </p>
+
+    <h2 id="architecture">Technical Architecture</h2>
+
+    <h3>Component Overview</h3>
+    <p>
+        The plugin consists of several key components:
+    </p>
+
+    <ul>
+        <li><strong>QGIS Plugin Interface</strong> - The UI components that integrate with QGIS</li>
+        <li><strong>Flowline Module</strong> - Core functionality for generating flowlines</li>
+        <li><strong>Preset Manager</strong> - Handles saving and loading of parameter configurations</li>
+        <li><strong>Conda Environment Management</strong> - Handles installation and management of GMT6 and grd2stream</li>
+    </ul>
+
+    <h3>Dependency Management</h3>
+    <p>
+        On Linux and macOS, the plugin:
+    </p>
+    <ol>
+        <li>Installs Miniconda3 to <code>~/miniconda3</code> (if not already installed)</li>
+        <li>Creates a "GMT6" Conda environment with GMT6 and required dependencies</li>
+        <li>Installs the grd2stream utility in the Conda environment</li>
+    </ol>
+
+    <p>
+        This approach ensures that:
+    </p>
+    <ul>
+        <li>The plugin works without requiring system-wide installation of GMT6</li>
+        <li>The plugin's dependencies don't interfere with existing installations</li>
+        <li>No administrator privileges are required for installation</li>
+    </ul>
+
+    <h2 id="usage">Using the Plugin</h2>
+
+    <h3>Basic Workflow</h3>
+    <ol>
+        <li>Click the grd2stream icon in the QGIS toolbar</li>
+        <li>If this is your first time using the plugin on Linux or macOS, you may be prompted to install dependencies</li>
+        <li>Select input rasters:
+            <ul>
+                <li>Raster 1: X-component of velocity</li>
+                <li>Raster 2: Y-component of velocity</li>
+                <li>For multi-band rasters, select the appropriate band for each component</li>
+            </ul>
+        </li>
+        <li>Configure parameters or load a preset</li>
+        <li>Click OK to proceed to seed point selection</li>
+        <li>Choose a method to select the seed point:
+            <ul>
+                <li>Click on the map</li>
+                <li>Enter coordinates manually</li>
+            </ul>
+        </li>
+        <li>The plugin will calculate the flowline and add it to your project as a vector layer</li>
+    </ol>
+
+    <h3>Parameter Configuration</h3>
+    <h4>Required Parameters</h4>
+    <ul>
+        <li><strong>Raster 1 & Raster 2:</strong> The X and Y component rasters</li>
+        <li><strong>Seed Point:</strong> The starting location for the flowline</li>
+    </ul>
+
+    <h4>Optional Parameters</h4>
+    <ul>
+        <li><strong>Backward Steps:</strong> Enable to trace the flowline in both upstream and downstream directions</li>
+        <li><strong>Step Size:</strong> Distance increment for integration steps (default is min(x_inc, y_inc) / 5)</li>
+        <li><strong>Max Integration Time:</strong> Maximum time for the integration process</li>
+        <li><strong>Max Steps:</strong> Maximum number of steps to calculate (default is 10,000)</li>
+        <li><strong>Output Format:</strong> Choose what data columns to include in the output layer</li>
+    </ul>
+
     <h3>Output Formats</h3>
     <ul>
-        <li><code>x y dist</code> - Coordinates and distance</li>
-        <li><code>x y dist v_x v_y</code> - Coordinates, distance, and velocity components</li>
-        <li><code>x y dist v_x v_y time</code> - Coordinates, distance, velocity components, and integration time</li>
+        <li><strong>Default (no option):</strong> x y dist
+            <ul>
+                <li>X and Y coordinates</li>
+                <li>Distance along the flowline</li>
+            </ul>
+        </li>
+        <li><strong>Extended (-l):</strong> x y dist v_x v_y
+            <ul>
+                <li>All default columns</li>
+                <li>X and Y velocity components at each point</li>
+            </ul>
+        </li>
+        <li><strong>Full (-t):</strong> x y dist v_x v_y time
+            <ul>
+                <li>All extended columns</li>
+                <li>Integration time for each point</li>
+            </ul>
+        </li>
     </ul>
 
     <h2 id="presets">Working with Presets</h2>
-    <p>
-        The preset system allows you to save frequently used configurations for easy reuse.
-    </p>
 
-    <h3>Saving a Preset</h3>
+    <h3>Saving Presets</h3>
+    <p>
+        To save your current configuration as a preset:
+    </p>
     <ol>
-        <li>Configure your parameters in the main dialog</li>
+        <li>Configure parameters in the main dialog</li>
         <li>Click "Save as Preset"</li>
         <li>Enter a name for your preset</li>
+        <li>Confirm to save</li>
     </ol>
 
-    <h3>Loading a Preset</h3>
+    <h3>Loading Presets</h3>
+    <p>
+        To load a saved preset:
+    </p>
     <ol>
         <li>Click "Load Preset" in the main dialog</li>
         <li>Select a preset from the list</li>
@@ -240,127 +298,172 @@
 
     <h3>Managing Presets</h3>
     <p>
-        You can view and manage your saved presets through the preset dialog. For each preset, you can:
+        The preset management dialog allows you to:
     </p>
     <ul>
-        <li><strong>View details</strong>: Hover over a preset to see its settings</li>
-        <li><strong>Edit</strong>: Modify existing presets by clicking the "View/Edit" button</li>
-        <li><strong>Delete</strong>: Remove presets that are no longer needed</li>
+        <li><strong>View:</strong> See detailed settings for each preset</li>
+        <li><strong>Edit:</strong> Modify parameters for existing presets</li>
+        <li><strong>Delete:</strong> Remove presets that are no longer needed</li>
     </ul>
-
-    <p>
-        Presets are saved in a JSON file in the plugin directory and are persistent between QGIS sessions.
-    </p>
 
     <h3>Using Last Settings</h3>
     <p>
-        You can quickly reuse the last used settings by clicking the "Use Last Settings" button in the main dialog.
-        This will either load the last used preset or the last manually configured settings.
+        The "Use Last Settings" button quickly reapplies:
     </p>
+    <ul>
+        <li>The last manually configured settings, or</li>
+        <li>The last preset that was used</li>
+    </ul>
+
+    <div class="note">
+        <strong>Note:</strong> Presets are stored in a <code>presets.json</code> file in the plugin directory and persist between QGIS sessions.
+    </div>
 
     <h2 id="technical-details">Technical Details</h2>
 
-    <h3>How Flowlines Are Generated</h3>
+    <h3>Integration Method</h3>
     <p>
-        The grd2stream plugin uses the grd2stream utility (part of the GMT suite) to trace streamlines through 2D vector fields. The process works as follows:
-    </p>
-    <ol>
-        <li>The plugin reads the vector field from the two input rasters</li>
-        <li>Starting from the seed point, the utility integrates along the vector field</li>
-        <li>The integration uses a 4th-order Runge-Kutta method to trace the path</li>
-        <li>The process continues until a boundary is reached or the maximum steps/time is exceeded</li>
-    </ol>
-
-    <h3>Output Vector Layer</h3>
-    <p>
-        The output is a point vector layer with points along the flowline. Depending on the selected output format, each point contains:
+        The plugin uses the grd2stream utility, which implements:
     </p>
     <ul>
-        <li>X and Y coordinates in the project CRS</li>
-        <li>Distance along the flowline</li>
-        <li>Optionally, velocity components at each point</li>
-        <li>Optionally, integration time</li>
+        <li>4th-order Runge-Kutta integration method</li>
+        <li>Adaptive step size control (optional)</li>
+        <li>Bi-linear interpolation between grid points</li>
     </ul>
 
-    <h3>Data Formats</h3>
+    <h3>Supported File Formats</h3>
     <p>
-        The plugin supports various raster formats through GDAL, including:
+        The plugin can work with any raster format supported by GDAL, including:
     </p>
     <ul>
         <li>GeoTIFF</li>
         <li>NetCDF</li>
         <li>HDF5</li>
         <li>GRIB</li>
-        <li>Other GDAL-supported formats</li>
+        <li>ASCII Grid</li>
+        <li>Many others</li>
     </ul>
 
+    <div class="note">
+        <strong>Tip:</strong> For NetCDF and similar multi-dimensional formats, you can select the specific variable by choosing the appropriate band in the input dialog.
+    </div>
+
+    <h3>Output Processing</h3>
     <p>
-        For NetCDF, HDF5, and GRIB files with multiple variables, you can specify the variable to use by selecting the appropriate band.
+        The plugin:
     </p>
+    <ol>
+        <li>Executes the grd2stream command with the specified parameters</li>
+        <li>Captures the command output (a text stream of coordinates and attributes)</li>
+        <li>Parses the output and converts it to a QGIS vector layer</li>
+        <li>Adds the vector layer to the current project</li>
+    </ol>
 
     <h2 id="troubleshooting">Troubleshooting</h2>
 
     <h3>Common Issues</h3>
 
-    <h4>Missing Dependencies</h4>
-    <p>
-        If the plugin cannot find the necessary dependencies, it will prompt you to install them. Make sure to follow the installation instructions carefully.
-    </p>
-
-    <h4>Invalid Input Rasters</h4>
-    <p>
-        If your input rasters don't represent valid vector components, the flowline generation may fail or produce unexpected results. Ensure that:
-    </p>
-    <ul>
-        <li>Both rasters have the same extent and resolution</li>
-        <li>The data represents vector components in the X and Y directions</li>
-        <li>The data values are in compatible units</li>
-    </ul>
-
     <h4>No Flowline Generated</h4>
-    <p>
-        If no flowline is generated, possible causes include:
-    </p>
     <ul>
-        <li>The seed point is in an area with zero or undefined vector values</li>
-        <li>The step size is too large relative to the vector field's spatial variability</li>
-        <li>The maximum steps or integration time is too low</li>
+        <li><strong>Issue:</strong> Plugin runs but no flowline appears</li>
+        <li><strong>Possible causes:</strong>
+            <ul>
+                <li>Seed point placed in an area with zero or undefined velocity</li>
+                <li>Input rasters don't represent valid velocity components</li>
+                <li>Step size too large for the data resolution</li>
+            </ul>
+        </li>
+        <li><strong>Solutions:</strong>
+            <ul>
+                <li>Try a different seed point location</li>
+                <li>Verify raster data represents X and Y velocity components</li>
+                <li>Reduce step size</li>
+            </ul>
+        </li>
     </ul>
 
-    <h3>Windows-Specific Issues</h3>
-    <p>
-        On Windows, the plugin relies on WSL. Common issues include:
-    </p>
+    <h4>Installation Problems</h4>
     <ul>
-        <li>WSL not properly installed or configured</li>
-        <li>Permissions issues with file access between Windows and WSL</li>
-        <li>Path conversion problems with special characters in filenames or paths</li>
+        <li><strong>Issue:</strong> Dependency installation fails</li>
+        <li><strong>Possible causes:</strong>
+            <ul>
+                <li>Network connectivity issues</li>
+                <li>Insufficient disk space</li>
+                <li>Permission issues in home directory</li>
+            </ul>
+        </li>
+        <li><strong>Solutions:</strong>
+            <ul>
+                <li>Check internet connection</li>
+                <li>Ensure at least 1GB free disk space</li>
+                <li>Check QGIS Python console for detailed error messages</li>
+            </ul>
+        </li>
     </ul>
 
-    <h3>Reporting Problems</h3>
-    <p>
-        If you encounter issues not covered in this troubleshooting section, please report them with:
-    </p>
+    <h4>Windows Support</h4>
     <ul>
-        <li>A detailed description of the problem</li>
-        <li>The steps taken that led to the issue</li>
-        <li>Error messages (check the QGIS log panel)</li>
-        <li>Sample data if possible</li>
+        <li><strong>Issue:</strong> Plugin shows command but doesn't execute it</li>
+        <li><strong>Cause:</strong> Windows execution support is still under development</li>
+        <li><strong>Solution:</strong> Currently not available; Windows support will be added in a future update</li>
     </ul>
 
-    <div class="warning">
-        <strong>Note:</strong> Check the QGIS log panel (View → Panels → Log Messages) for detailed error messages that may help diagnose issues.
-    </div>
-
-    <h3>Contact Information</h3>
+    <h3>Checking Logs</h3>
     <p>
-        For support or to report issues, please contact:
+        For detailed troubleshooting:
+    </p>
+    <ol>
+        <li>Open the QGIS Python Console (Plugins → Python Console)</li>
+        <li>Look for messages related to grd2stream</li>
+        <li>Check detailed execution logs and error messages</li>
+    </ol>
+
+    <h2 id="development">Development Information</h2>
+
+    <h3>Plugin Structure</h3>
+    <p>
+        The plugin code is organized as follows:
     </p>
     <ul>
-        <li>Thomas Kleiner (Author)</li>
-        <li>Abraham Wondimu (Contributor)</li>
+        <li><strong>__init__.py</strong> - Plugin initialization</li>
+        <li><strong>grd_2_stream.py</strong> - Main plugin class and QGIS integration</li>
+        <li><strong>flowline_module.py</strong> - Core functionality</li>
+        <li><strong>dialog_selection.py</strong> - UI for parameter selection</li>
+        <li><strong>dialog_preset.py</strong> - UI for preset management</li>
+        <li><strong>help_widget.py</strong> - Help documentation display</li>
     </ul>
 
-    <p>&copy; 2013-2025 Thomas Kleiner & Abraham Wondimu</p>
+    <h3>Contributing</h3>
+    <p>
+        Contributions to the plugin are welcome! Priority areas include:
+    </p>
+    <ul>
+        <li>Windows support implementation</li>
+    </ul>
+
+    <h2 id="license">License Information</h2>
+
+    <h3>Plugin License</h3>
+    <p>
+        The grd2stream QGIS plugin is licensed under the GNU General Public License v3.0 (GPL-3.0).
+    </p>
+
+    <h3>Third-Party Components</h3>
+    <p>
+        The plugin includes:
+    </p>
+    <ul>
+        <li><strong>grd2stream</strong> command-line tool by Thomas Kleiner:
+            <ul>
+                <li>Licensed under the BSD 3-Clause License</li>
+                <li>See the full license text in <code>lib/LICENSE.txt</code></li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Copyright</h3>
+    <p>
+        © 2013-2025 Thomas Kleiner & ScienceFlightPlanner-Team
+    </p>
 </body>
 </html>
