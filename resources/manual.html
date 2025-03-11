@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>grd2stream QGIS Plugin Manual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2D3E50;
+            border-bottom: 2px solid #3498DB;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980B9;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #3498DB;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .note {
+            background: #e7f5fe;
+            border-left: 4px solid #3498DB;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #ffeaea;
+            border-left: 4px solid #E74C3C;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>grd2stream QGIS Plugin - User Guide</h1>
+
+    <h2>What is grd2stream?</h2>
+    <p>
+        grd2stream is a QGIS plugin that generates flowlines from velocity grid data. It allows you to:
+    </p>
+    <ul>
+        <li>Select seed points to generate flowlines showing direction of flow</li>
+        <li>Work with various raster formats through GDAL compatibility</li>
+        <li>Configure flowline calculation parameters and save them as presets</li>
+    </ul>
+
+    <div class="note">
+        <strong>Platform Support:</strong>
+        <ul>
+            <li><strong>macOS/Linux:</strong> Fully supported</li>
+            <li><strong>Windows:</strong> Currently in development; you can configure parameters but execution will only display the command needed</li>
+        </ul>
+    </div>
+
+    <h2>Getting Started</h2>
+
+    <h3>First-Time Setup</h3>
+    <p>
+        When you first run the plugin on Linux or macOS, it will check for required components:
+    </p>
+    <ol>
+        <li>If needed, the plugin will offer to install GMT6 (via Miniconda) into an isolated environment</li>
+        <li>It will also install the grd2stream command-line utility</li>
+        <li>These installations won't affect any existing GMT installations on your system</li>
+    </ol>
+
+    <h3>Basic Usage</h3>
+    <ol>
+        <li>Click the grd2stream icon in the QGIS toolbar</li>
+        <li>Select two raster layers representing X and Y velocity components</li>
+        <li>Configure your parameters (or load a preset)</li>
+        <li>Choose how to select your seed point (map click or manual coordinates)</li>
+        <li>The plugin will calculate and display the flowline as a vector layer</li>
+    </ol>
+
+    <h2>Configuration Options</h2>
+
+    <h3>Input Parameters</h3>
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default</th>
+        </tr>
+        <tr>
+            <td>Raster 1</td>
+            <td>X-component velocity grid</td>
+            <td>Required</td>
+        </tr>
+        <tr>
+            <td>Raster 2</td>
+            <td>Y-component velocity grid</td>
+            <td>Required</td>
+        </tr>
+        <tr>
+            <td>Backward Steps</td>
+            <td>Trace flowline in both upstream and downstream directions</td>
+            <td>Off</td>
+        </tr>
+        <tr>
+            <td>Step Size</td>
+            <td>Distance increment for integration steps</td>
+            <td>min(x_inc, y_inc) / 5</td>
+        </tr>
+        <tr>
+            <td>Max Integration Time</td>
+            <td>Maximum time for integration process</td>
+            <td>Unlimited</td>
+        </tr>
+        <tr>
+            <td>Max Steps</td>
+            <td>Maximum number of steps to calculate</td>
+            <td>10,000</td>
+        </tr>
+        <tr>
+            <td>Output Format</td>
+            <td>Data columns in output layer</td>
+            <td>x y dist</td>
+        </tr>
+    </table>
+
+    <h3>Output Formats</h3>
+    <ul>
+        <li><strong>Default:</strong> x y dist (coordinates and distance along flowline)</li>
+        <li><strong>Extended:</strong> x y dist v_x v_y (includes velocity components)</li>
+        <li><strong>Full:</strong> x y dist v_x v_y time (includes integration time)</li>
+    </ul>
+
+    <h2>Working with Presets</h2>
+    <p>
+        Save time by storing and reusing configurations:
+    </p>
+    <ul>
+        <li><strong>Save Preset:</strong> After configuring parameters, click "Save as Preset" and name it</li>
+        <li><strong>Load Preset:</strong> Click "Load Preset" to select from saved configurations</li>
+        <li><strong>Last Settings:</strong> Click "Use Last Settings" to quickly reapply previous configuration</li>
+    </ul>
+
+    <h2>Troubleshooting</h2>
+
+    <div class="warning">
+        <strong>Windows Users:</strong> Currently, the plugin can only display the command that would be executed. Full Windows support is under development.
+    </div>
+
+    <h3>Common Issues</h3>
+    <ul>
+        <li><strong>No flowline generated:</strong> Ensure seed point is placed in an area with non-zero velocity data</li>
+        <li><strong>Missing dependencies:</strong> Allow the plugin to install required components when prompted</li>
+        <li><strong>Unexpected results:</strong> Verify that both input rasters have the same extent, resolution, and coordinate system</li>
+    </ul>
+
+    <p>
+        For detailed logs, check the QGIS Python console.
+    </p>
+
+    <h2>License Information</h2>
+    <p>
+        grd2stream QGIS plugin is licensed under GNU GPL v3.
+    </p>
+    <p>
+        The plugin includes the grd2stream command-line utility by Thomas Kleiner, licensed under the BSD 3-Clause License. See the full license text in lib/LICENSE.txt.
+    </p>
+
+    <hr>
+    <p>© 2013-2025 Thomas Kleiner & ScienceFlightPlanner-Team</p>
+</body>
+</html>

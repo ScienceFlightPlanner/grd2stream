@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/plugins/grd_2_stream" >
         <file>icon.png</file>
+        <file>resources/icons/flowline.png</file>
+        <file>resources/icons/flowline_darkmode.png</file>
+        <file>resources/icons/help.svg</file>
+        <file>resources/manual.html</file>
     </qresource>
 </RCC>
