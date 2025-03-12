@@ -4,466 +4,857 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>grd2stream Documentation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 20px;
-            color: #333;
-        }
-        h1 {
-            color: #2D3E50;
-            border-bottom: 2px solid #3498DB;
-            padding-bottom: 10px;
-        }
-        h2 {
-            color: #2980B9;
-            margin-top: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        h3 {
-            color: #3498DB;
-        }
-        code {
-            background: #f5f5f5;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-        pre {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        .note {
-            background: #e7f5fe;
-            border-left: 4px solid #3498DB;
-            padding: 10px 15px;
-            margin: 20px 0;
-        }
-        .warning {
-            background: #ffeaea;
-            border-left: 4px solid #E74C3C;
-            padding: 10px 15px;
-            margin: 20px 0;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            margin: 10px 0;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <h1>grd2stream – QGIS Plugin</h1>
+    <!-- Header Section -->
+    <header class="site-header">
+        <div class="container">
+            <h1>grd2stream – a QGIS Plugin</h1>
+            <p class="tagline">Generate streamlines from gridded datasets w/ precision & ease</p>
+            <a href="#installation" class="cta-button">Get Started <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </header>
 
-    <h2>Table of Contents</h2>
-    <ul>
-        <li><a href="#overview">Overview</a></li>
-        <li><a href="#installation">Installation & Requirements</a></li>
-        <li><a href="#platform-support">Platform Support</a></li>
-        <li><a href="#architecture">Technical Architecture</a></li>
-        <li><a href="#usage">Using the Plugin</a></li>
-        <li><a href="#presets">Working with Presets</a></li>
-        <li><a href="#technical-details">Technical Details</a></li>
-        <li><a href="#troubleshooting">Troubleshooting</a></li>
-        <li><a href="#development">Development Information</a></li>
-        <li><a href="#license">License Information</a></li>
-    </ul>
+    <div class="container">
+        <!-- Introduction Section -->
+        <div class="plugin-intro">
+            <p class="intro-text">
+                The <a href="https://github.com/ScienceFlightPlanner/grd2stream" class="highlight">grd2stream</a> QGIS plugin allows users to comfortably generate multiple flowlines from rasters by selecting seed points. This plugin leverages the power of <a href="https://docs.generic-mapping-tools.org/latest/devdocs/api.html" class="highlight">GMT6</a> (Generic Mapping Tools) to ensure compatibility with all GDAL file formats!
+            </p>
+            <p class="feature-summary">
+                The core functionality is based on the <code>grd2stream</code> command-line utility, which utilizes Runge-Kutta integration methods.
+            </p>
+        </div>
 
-    <h2 id="overview">Overview</h2>
-    <p>
-        The grd2stream QGIS plugin allows users to comfortably generate multiple flowlines from velocity grids by selecting seed points.
-        This plugin utilizes GMT6 (Generic Mapping Tools) to ensure compatibility with all GDAL file formats.
-    </p>
+        <!-- Table of Contents -->
+        <div class="toc-section">
+            <h2>Table of Contents</h2>
+            <div class="toc-grid">
+                <a href="#overview" class="toc-card">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Overview</h3>
+                    <p>Key features and capabilities</p>
+                </a>
+                <a href="#installation" class="toc-card">
+                    <i class="fas fa-download"></i>
+                    <h3>Installation</h3>
+                    <p>Setup guide and requirements</p>
+                </a>
+                <a href="#platform-support" class="toc-card">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Platform Support</h3>
+                    <p>Compatibility information</p>
+                </a>
+                <a href="#architecture" class="toc-card">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>Architecture</h3>
+                    <p>Technical design details</p>
+                </a>
+                <a href="#usage" class="toc-card">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Usage</h3>
+                    <p>How to use the plugin</p>
+                </a>
+                <a href="#presets" class="toc-card">
+                    <i class="fas fa-sliders-h"></i>
+                    <h3>Presets</h3>
+                    <p>Working with configuration presets</p>
+                </a>
+                <a href="#technical-details" class="toc-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Technical Details</h3>
+                    <p>Integration methods and file formats</p>
+                </a>
+                <a href="#troubleshooting" class="toc-card">
+                    <i class="fas fa-bug"></i>
+                    <h3>Troubleshooting</h3>
+                    <p>Common issues and solutions</p>
+                </a>
+            </div>
+        </div>
 
-    <p>
-        The core functionality is based on the <code>grd2stream</code> command-line utility, which calculates streamlines from gridded velocity
-        fields using Runge-Kutta integration methods.
-    </p>
+        <!-- Key Features Section -->
+        <h2 id="overview">Overview</h2>
 
-    <h3>Key Features</h3>
-    <ul>
-        <li>Generate flowlines from any GDAL-compatible X and Y velocity component rasters</li>
-        <li>Interactive seed point selection via map clicks or manual coordinate entry</li>
-        <li>Configurable integration parameters (step size, max steps, etc.)</li>
-        <li>Save and load parameter presets for repeated use</li>
-        <li>Isolated GMT6 environment that doesn't interfere with existing installations</li>
-    </ul>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-box"></i></div>
+                <h3>Isolated Environment</h3>
+                <p>Isolated GMT6 environment that does not interfere with existing installations</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-stream"></i></div>
+                <h3>Flowline Calculation</h3>
+                <p>Generate flowlines from any GDAL-compatible raster datasets containing X and Y component data</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-mouse-pointer"></i></div>
+                <h3>Interactive Selection</h3>
+                <p>Interactive seed point selection via map clicks or manual coordinate entry</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
+                <h3>Customizable Parameters</h3>
+                <p>Configurable integration parameters (step size, max steps, etc.)</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-save"></i></div>
+                <h3>Preset Management</h3>
+                <p>Save and load parameter presets for repeated use</p>
+            </div>
+        </div>
 
-    <h2 id="installation">Installation & Requirements</h2>
+        <!-- Installation Section -->
+        <h2 id="installation">Installation & Requirements</h2>
 
-    <h3>QGIS Plugin Installation</h3>
-    <ol>
-        <li>Open QGIS</li>
-        <li>Go to Plugins → Manage and Install Plugins</li>
-        <li>Search for "grd2stream"</li>
-        <li>Click "Install Plugin"</li>
-    </ol>
+        <h3>QGIS Plugin Installation</h3>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Open QGIS</h4>
+                    <p class="step-description">Launch your QGIS application</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Access Plugin Manager</h4>
+                    <p class="step-description">Go to Plugins → Manage and Install Plugins</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Search for grd2stream</h4>
+                    <p class="step-description">Type "grd2stream" in the search box</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Install Plugin</h4>
+                    <p class="step-description">Click "Install Plugin" and wait for completion</p>
+                </div>
+            </div>
+        </div>
 
-    <h3>Dependencies</h3>
-    <p>
-        The plugin requires:
-    </p>
-    <ul>
-        <li>QGIS 3.0 or higher</li>
-        <li>GMT6 (Generic Mapping Tools version 6)</li>
-        <li>grd2stream command-line utility</li>
-    </ul>
+        <h3>Dependencies</h3>
+        <p>
+            The plugin requires:
+        </p>
+        <ul class="requirements-list">
+            <li><span class="badge badge-primary">GMT6</span> Generic Mapping Tools version 6</li>
+            <li><span class="badge badge-primary">grd2stream</span> Command-line utility</li>
+        </ul>
 
-    <div class="note">
-        <strong>Note:</strong> On Linux and macOS, the plugin can automatically install these dependencies in an isolated Miniconda environment.
+        <div class="note">
+            <p><strong>Note:</strong> On Linux and macOS, the plugin can automatically install these dependencies in an isolated Miniconda environment.</p>
+        </div>
+
+        <!-- Platform Support Section -->
+        <h2 id="platform-support">Platform Support</h2>
+
+        <h3>Current Status</h3>
+        <div class="platform-grid">
+            <div class="platform-card">
+                <div class="platform-header">
+                    <div class="platform-icon"><i class="fab fa-linux"></i></div>
+                    <h4 class="platform-name">Linux</h4>
+                    <span class="platform-status status-supported">Fully Supported</span>
+                </div>
+                <p>Automatic installation of dependencies via Miniconda</p>
+            </div>
+            <div class="platform-card">
+                <div class="platform-header">
+                    <div class="platform-icon"><i class="fab fa-apple"></i></div>
+                    <h4 class="platform-name">macOS</h4>
+                    <span class="platform-status status-supported">Fully Supported</span>
+                </div>
+                <p>Automatic installation of dependencies via Miniconda</p>
+            </div>
+            <div class="platform-card">
+                <div class="platform-header">
+                    <div class="platform-icon"><i class="fab fa-windows"></i></div>
+                    <h4 class="platform-name">Windows</h4>
+                    <span class="platform-status status-coming">In Development</span>
+                </div>
+                <p>Currently only planning/parameter configuration available. Command execution not yet supported.</p>
+            </div>
+        </div>
+
+        <h3>Windows Limitations</h3>
+        <p>
+            On Windows, the plugin currently cannot execute the grd2stream command. However, you can still:
+        </p>
+        <ul>
+            <li>Configure all parameters and settings</li>
+            <li>Save and manage presets</li>
+            <li>View the command that would be executed (for reference)</li>
+        </ul>
+
+        <div class="info-box">
+            <p>Full Windows support is being developed and will be available in a future update.</p>
+        </div>
+
+        <!-- Architecture Section -->
+        <h2 id="architecture">Technical Architecture</h2>
+
+        <h3>Component Overview</h3>
+        <p>
+            The plugin consists of several key components:
+        </p>
+
+        <div class="architecture-diagram">
+            <div class="arch-component">
+                <i class="fas fa-box-open"></i>
+                <h4>Conda Environment</h4>
+                <p>Handles installation and management of GMT6 and grd2stream</p>
+            </div>
+            <div class="arch-component">
+                <i class="fas fa-desktop"></i>
+                <h4>QGIS Plugin Interface</h4>
+                <p>The UI components that integrate with QGIS</p>
+            </div>
+            <div class="arch-component">
+                <i class="fas fa-stream"></i>
+                <h4>Flowline Module</h4>
+                <p>Core functionality for generating flowlines</p>
+            </div>
+            <div class="arch-component">
+                <i class="fas fa-sliders-h"></i>
+                <h4>Preset Manager</h4>
+                <p>Handles saving and loading of parameter configurations</p>
+            </div>
+        </div>
+
+        <h3>Dependency Management</h3>
+        <p>
+            On Linux and macOS, the plugin:
+        </p>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Install Miniconda</h4>
+                    <p class="step-description">Installs Miniconda3 to <code>~/miniconda3</code> (if not already installed)</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Create Environment</h4>
+                    <p class="step-description">Creates a "GMT6" Conda environment with GMT6 and required dependencies</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number"></div>
+                <div class="step-content">
+                    <h4 class="step-title">Install grd2stream</h4>
+                    <p class="step-description">Installs the grd2stream utility in the Conda environment</p>
+                </div>
+            </div>
+        </div>
+
+        <p>
+            This approach ensures that:
+        </p>
+        <ul class="benefits-list">
+            <li><i class="fas fa-check-circle"></i> The plugin works without requiring system-wide installation of GMT6</li>
+            <li><i class="fas fa-check-circle"></i> The plugin's dependencies do not interfere with existing installations</li>
+            <li><i class="fas fa-check-circle"></i> No administrator privileges are required for installation</li>
+        </ul>
+
+        <!-- Usage Section -->
+        <h2 id="usage">Using the Plugin</h2>
+
+
+
+        <h3>Basic Workflow</h3>
+        <div class="workflow-container">
+            <div class="workflow-step">
+                <div class="workflow-icon">
+                    <i class="fas fa-mouse-pointer"></i>
+                </div>
+                <div class="workflow-content">
+                    <h4>Launch Plugin</h4>
+                    <p>Click the grd2stream icon in the QGIS toolbar</p>
+                </div>
+            </div>
+            <div class="workflow-step">
+                <div class="workflow-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="workflow-content">
+                    <h4>Setup Dependencies</h4>
+                    <p>First-time users on Linux/macOS may be prompted to install dependencies</p>
+                </div>
+            </div>
+            <div class="workflow-step">
+                <div class="workflow-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="workflow-content">
+                    <h4>Select Input Rasters</h4>
+                    <p>Choose X-component and Y-component raster dataset</p>
+                </div>
+            </div>
+            <div class="workflow-step">
+                <div class="workflow-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <div class="workflow-content">
+                    <h4>Configure Parameters</h4>
+                    <p>Set parameters or load a preset configuration</p>
+                </div>
+            </div>
+            <div class="workflow-step">
+                <div class="workflow-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="workflow-content">
+                    <h4>Select Seed Point</h4>
+                    <p>Click on the map or enter coordinates manually</p>
+                </div>
+            </div>
+            <div class="workflow-step">
+                <div class="workflow-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="workflow-content">
+                    <h4>Generate Flowline</h4>
+                    <p>The plugin calculates and adds the flowline as a vector layer</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Parameter Configuration</h3>
+        <div class="parameter-sections">
+            <div class="parameter-group">
+                <h4>Required Parameters</h4>
+                <div class="parameter-table-container">
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Raster 1 & Raster 2</strong></td>
+                            <td>The X and Y component rasters</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seed Point</strong></td>
+                            <td>The starting location for the flowline</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="parameter-group">
+                <h4>Optional Parameters</h4>
+                <div class="parameter-table-container">
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Backward Steps</strong></td>
+                            <td>Enable to trace the flowline in both upstream and downstream directions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Step Size</strong></td>
+                            <td>Distance increment for integration steps (default is min(x_inc, y_inc) / 5)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max Integration Time</strong></td>
+                            <td>Maximum time for the integration process</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max Steps</strong></td>
+                            <td>Maximum number of steps to calculate (default is 10,000)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Format</strong></td>
+                            <td>Choose what data columns to include in the output layer</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h3>Output Formats</h3>
+        <div class="output-formats">
+            <div class="output-format-card">
+                <h4>Default <span class="format-option">(no option)</span></h4>
+                <p class="format-columns">x y dist</p>
+                <ul>
+                    <li>X and Y coordinates</li>
+                    <li>Distance along the flowline</li>
+                </ul>
+            </div>
+            <div class="output-format-card">
+                <h4>Extended <span class="format-option">(-l)</span></h4>
+                <p class="format-columns">x y dist v_x v_y</p>
+                <ul>
+                    <li>All default columns</li>
+                    <li>X and Y components at each point</li>
+                </ul>
+            </div>
+            <div class="output-format-card">
+                <h4>Full <span class="format-option">(-t)</span></h4>
+                <p class="format-columns">x y dist v_x v_y time</p>
+                <ul>
+                    <li>All extended columns</li>
+                    <li>Integration time for each point</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Presets Section -->
+        <h2 id="presets">Working with Presets</h2>
+
+        <div class="presets-section">
+            <div class="preset-action">
+                <div class="preset-icon">
+                    <i class="fas fa-save"></i>
+                </div>
+                <div class="preset-content">
+                    <h3>Saving Presets</h3>
+                    <ol>
+                        <li>Configure parameters in the main dialog</li>
+                        <li>Click "Save as Preset"</li>
+                        <li>Enter a name for your preset</li>
+                        <li>Confirm to save</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="preset-action">
+                <div class="preset-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="preset-content">
+                    <h3>Loading Presets</h3>
+                    <ol>
+                        <li>Click "Load Preset" in the main dialog</li>
+                        <li>Select a preset from the list</li>
+                        <li>Click "Select"</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="preset-action">
+                <div class="preset-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="preset-content">
+                    <h3>Managing Presets</h3>
+                    <ul>
+                        <li><strong>View:</strong> See detailed settings for each preset</li>
+                        <li><strong>Edit:</strong> Modify parameters for existing presets</li>
+                        <li><strong>Delete:</strong> Remove presets that are no longer needed</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preset-action">
+                <div class="preset-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="preset-content">
+                    <h3>Using Last Settings</h3>
+                    <p>The "Use Last Settings" button quickly reapplies:</p>
+                    <ul>
+                        <li>The last manually configured settings, or</li>
+                        <li>The last preset that was used</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <p><strong>Note:</strong> Presets are stored in a <code>presets.json</code> file in the plugin directory and persist between QGIS sessions.</p>
+        </div>
+
+        <!-- Technical Details Section -->
+        <h2 id="technical-details">Technical Details</h2>
+
+        <h3>Integration Method</h3>
+        <div class="technical-card">
+            <p>
+                The plugin uses the grd2stream utility, which implements:
+            </p>
+            <ul>
+                <li><i class="fas fa-calculator"></i> 4th-order Runge-Kutta integration method</li>
+                <li><i class="fas fa-arrows-alt-v"></i> Adaptive step size control (optional)</li>
+                <li><i class="fas fa-chart-line"></i> Bi-linear interpolation between grid points</li>
+            </ul>
+        </div>
+
+        <h3>Supported File Formats</h3>
+        <div class="file-formats">
+            <p>
+                The plugin can work with any raster format supported by GDAL, including:
+            </p>
+            <div class="format-grid">
+                <div class="format-badge">GeoTIFF</div>
+                <div class="format-badge">NetCDF</div>
+                <div class="format-badge">HDF5</div>
+                <div class="format-badge">GRIB</div>
+                <div class="format-badge">ASCII Grid</div>
+                <div class="format-badge">Many others</div>
+            </div>
+        </div>
+
+        <div class="tip">
+            <p><strong>Tip:</strong> For NetCDF and similar multi-dimensional formats, you can select the specific variable by choosing the appropriate band in the input dialog.</p>
+        </div>
+
+        <div class="processing-section">
+            <h3><i class="fas fa-cogs"></i> Output Processing</h3>
+            <div class="processing-steps">
+                <div class="processing-step">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <p class="step-description">Executes the <code>grd2stream</code> command with the specified parameters</p>
+                    </div>
+                </div>
+
+                <div class="processing-step">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <p class="step-description">Captures the command output (a text stream of coordinates and attributes)</p>
+                    </div>
+                </div>
+
+                <div class="processing-step">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <p class="step-description">Parses the output and converts it to a QGIS vector layer</p>
+                    </div>
+                </div>
+
+                <div class="processing-step">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <p class="step-description">Adds the vector layer to the current project</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        // Optional animation for progress indicator
+        document.addEventListener('DOMContentLoaded', function() {
+          const progressIndicator = document.querySelector('.progress-indicator');
+          if (progressIndicator) {
+            // Start with no height
+            progressIndicator.style.height = '0%';
+
+            // Animate height on scroll
+            function updateProgressHeight() {
+              const steps = document.querySelectorAll('.processing-step');
+              const totalSteps = steps.length;
+              let visibleSteps = 0;
+
+              steps.forEach(step => {
+                const rect = step.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.8) {
+                  visibleSteps++;
+                }
+              });
+
+              const progress = (visibleSteps / totalSteps) * 100;
+              progressIndicator.style.height = `${progress}%`;
+            }
+
+            // Initial check
+            updateProgressHeight();
+
+            // Update on scroll
+            window.addEventListener('scroll', updateProgressHeight);
+          }
+        });
+        </script>
+
+        <!-- Troubleshooting Section -->
+        <h2 id="troubleshooting">Troubleshooting</h2>
+
+        <h3>Common Issues</h3>
+        <div class="troubleshooting-section">
+            <div class="issue-card">
+                <div class="issue-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>No Flowline Generated</h4>
+                </div>
+                <div class="issue-content">
+                    <div class="issue-problem">
+                        <h5>Issue:</h5>
+                        <p>Plugin runs but no flowline appears</p>
+                    </div>
+                    <div class="issue-causes">
+                        <h5>Possible causes:</h5>
+                        <ul>
+                            <li>Seed point placed in an area with zero or undefined values</li>
+                            <li>Input rasters do not represent valid component data</li>
+                            <li>Step size too large for the data resolution</li>
+                        </ul>
+                    </div>
+                    <div class="issue-solutions">
+                        <h5>Solutions:</h5>
+                        <ul>
+                            <li>Try a different seed point location</li>
+                            <li>Verify raster data correctly represents X and Y component values</li>
+                            <li>Reduce step size</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="issue-card">
+                <div class="issue-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Installation Problems</h4>
+                </div>
+                <div class="issue-content">
+                    <div class="issue-problem">
+                        <h5>Issue:</h5>
+                        <p>Dependency installation fails</p>
+                    </div>
+                    <div class="issue-causes">
+                        <h5>Possible causes:</h5>
+                        <ul>
+                            <li>Network connectivity issues</li>
+                            <li>Insufficient disk space</li>
+                            <li>Permission issues in home directory</li>
+                        </ul>
+                    </div>
+                    <div class="issue-solutions">
+                        <h5>Solutions:</h5>
+                        <ul>
+                            <li>Check internet connection</li>
+                            <li>Ensure at least 1GB free disk space</li>
+                            <li>Check QGIS Python console for detailed error messages</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="issue-card">
+                <div class="issue-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Windows Support</h4>
+                </div>
+                <div class="issue-content">
+                    <div class="issue-problem">
+                        <h5>Issue:</h5>
+                        <p>Plugin shows command but doesn't execute it</p>
+                    </div>
+                    <div class="issue-causes">
+                        <h5>Cause:</h5>
+                        <p>Windows execution support is still under development</p>
+                    </div>
+                    <div class="issue-solutions">
+                        <h5>Solution:</h5>
+                        <p>Currently not available; Windows support will be added in a future update</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="log-instructions">
+            <h3><i class="fas fa-search"></i>Checking Logs</h3>
+            <p>
+                For detailed troubleshooting, follow these steps to access and analyze plugin logs:
+            </p>
+            <ol>
+                <li>Open the QGIS Python Console (<code>Plugins → Python Console</code>)</li>
+                <li>Look for messages related to <code>grd2stream</code></li>
+                <li>Check detailed execution logs and error messages</li>
+            </ol>
+        </div>
+
+        <!-- Development Section -->
+        <h2 id="development">Development Information</h2>
+
+        <h3>Plugin Structure</h3>
+        <div class="code-structure">
+            <div class="file-item">
+                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                <div class="file-content">
+                    <h4>__init__.py</h4>
+                    <p>Plugin initialization</p>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                <div class="file-content">
+                    <h4>grd_2_stream.py</h4>
+                    <p>Main plugin class and QGIS integration</p>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                <div class="file-content">
+                    <h4>flowline_module.py</h4>
+                    <p>Core functionality</p>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                <div class="file-content">
+                    <h4>dialog_selection.py</h4>
+                    <p>UI for parameter selection</p>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                <div class="file-content">
+                    <h4>dialog_preset.py</h4>
+                    <p>UI for preset management</p>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                <div class="file-content">
+                    <h4>help_widget.py</h4>
+                    <p>Help documentation display</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Contributing</h3>
+        <div class="contributing-section">
+            <p>
+                Contributions to the plugin are welcome! Priority areas include:
+            </p>
+            <div class="contribution-areas">
+                <div class="contribution-item">
+                    <i class="fab fa-windows"></i>
+                    <p>Windows support implementation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- License Section -->
+        <h2 id="license">License Information</h2>
+
+        <h3>Plugin License</h3>
+        <div class="license-info">
+            <div class="license-icon">
+                <i class="fas fa-file-contract"></i>
+            </div>
+            <div class="license-content">
+                <p>
+                    The grd2stream QGIS plugin is licensed under the GNU General Public License v3.0 (GPL-3.0).
+                </p>
+            </div>
+        </div>
+
+        <h3>Third-Party Components</h3>
+        <div class="third-party">
+            <p>
+                The plugin includes:
+            </p>
+            <div class="component-license">
+                <h4><strong>grd2stream</strong> command-line tool by Thomas Kleiner:</h4>
+                <ul>
+                    <li>Licensed under the BSD 3-Clause License</li>
+                    <li>See the full license text in <code>lib/LICENSE.txt</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Copyright</h3>
+        <div class="copyright-section">
+            <p>
+                © 2013-2025 Abraham Wondimu, Anna Menshikova, Maxim Poliakov, Simon Povh & Thomas Kleiner
+            </p>
+        </div>
     </div>
 
-    <h2 id="platform-support">Platform Support</h2>
+    <!-- Back to top button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </a>
 
-    <h3>Current Status</h3>
-    <table>
-        <tr>
-            <th>Platform</th>
-            <th>Status</th>
-            <th>Notes</th>
-        </tr>
-        <tr>
-            <td>Linux</td>
-            <td>✅ Fully Supported</td>
-            <td>Automatic installation of dependencies via Miniconda</td>
-        </tr>
-        <tr>
-            <td>macOS</td>
-            <td>✅ Fully Supported</td>
-            <td>Automatic installation of dependencies via Miniconda</td>
-        </tr>
-        <tr>
-            <td>Windows</td>
-            <td>🚧 In Development</td>
-            <td>Currently only planning/parameter configuration available. Command execution not yet supported.</td>
-        </tr>
-    </table>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>grd2stream</h3>
+                    <p>QGIS plugin for generating streamlines from gridded datasets</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#overview">Overview</a></li>
+                        <li><a href="#installation">Installation</a></li>
+                        <li><a href="#usage">Usage</a></li>
+                        <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="https://qgis.org/" target="_blank">QGIS Official Website</a></li>
+                        <li><a href="https://www.generic-mapping-tools.org/" target="_blank">GMT Website</a></li>
+                        <li><a href="https://github.com/ScienceFlightPlanner" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2013-2025 ScienceFlightPlanner-Team & Thomas Kleiner. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-    <h3>Windows Limitations</h3>
-    <p>
-        On Windows, the plugin currently cannot execute the grd2stream command. However, you can still:
-    </p>
-    <ul>
-        <li>Configure all parameters and settings</li>
-        <li>Save and manage presets</li>
-        <li>View the command that would be executed (for reference)</li>
-    </ul>
+    <!-- JavaScript for interactive elements -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Back to top button
+            const backToTopButton = document.getElementById('backToTop');
 
-    <p>
-        Full Windows support is being developed and will be available in a future update.
-    </p>
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
 
-    <h2 id="architecture">Technical Architecture</h2>
+            backToTopButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
 
-    <h3>Component Overview</h3>
-    <p>
-        The plugin consists of several key components:
-    </p>
+            // Animate steps
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.style.animationDelay = `${0.2 * index}s`;
+            });
 
-    <ul>
-        <li><strong>QGIS Plugin Interface</strong> - The UI components that integrate with QGIS</li>
-        <li><strong>Flowline Module</strong> - Core functionality for generating flowlines</li>
-        <li><strong>Preset Manager</strong> - Handles saving and loading of parameter configurations</li>
-        <li><strong>Conda Environment Management</strong> - Handles installation and management of GMT6 and grd2stream</li>
-    </ul>
+            // Reveal elements on scroll
+            const scrollRevealElements = document.querySelectorAll('.feature-card, .platform-card, .workflow-step, .issue-card, .output-format-card');
 
-    <h3>Dependency Management</h3>
-    <p>
-        On Linux and macOS, the plugin:
-    </p>
-    <ol>
-        <li>Installs Miniconda3 to <code>~/miniconda3</code> (if not already installed)</li>
-        <li>Creates a "GMT6" Conda environment with GMT6 and required dependencies</li>
-        <li>Installs the grd2stream utility in the Conda environment</li>
-    </ol>
+            const checkScrollReveal = function() {
+                scrollRevealElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const triggerPoint = window.innerHeight * 0.8;
 
-    <p>
-        This approach ensures that:
-    </p>
-    <ul>
-        <li>The plugin works without requiring system-wide installation of GMT6</li>
-        <li>The plugin's dependencies don't interfere with existing installations</li>
-        <li>No administrator privileges are required for installation</li>
-    </ul>
+                    if (elementTop < triggerPoint) {
+                        element.classList.add('visible');
+                    }
+                });
+            };
 
-    <h2 id="usage">Using the Plugin</h2>
-
-    <h3>Basic Workflow</h3>
-    <ol>
-        <li>Click the grd2stream icon in the QGIS toolbar</li>
-        <li>If this is your first time using the plugin on Linux or macOS, you may be prompted to install dependencies</li>
-        <li>Select input rasters:
-            <ul>
-                <li>Raster 1: X-component of velocity</li>
-                <li>Raster 2: Y-component of velocity</li>
-                <li>For multi-band rasters, select the appropriate band for each component</li>
-            </ul>
-        </li>
-        <li>Configure parameters or load a preset</li>
-        <li>Click OK to proceed to seed point selection</li>
-        <li>Choose a method to select the seed point:
-            <ul>
-                <li>Click on the map</li>
-                <li>Enter coordinates manually</li>
-            </ul>
-        </li>
-        <li>The plugin will calculate the flowline and add it to your project as a vector layer</li>
-    </ol>
-
-    <h3>Parameter Configuration</h3>
-    <h4>Required Parameters</h4>
-    <ul>
-        <li><strong>Raster 1 & Raster 2:</strong> The X and Y component rasters</li>
-        <li><strong>Seed Point:</strong> The starting location for the flowline</li>
-    </ul>
-
-    <h4>Optional Parameters</h4>
-    <ul>
-        <li><strong>Backward Steps:</strong> Enable to trace the flowline in both upstream and downstream directions</li>
-        <li><strong>Step Size:</strong> Distance increment for integration steps (default is min(x_inc, y_inc) / 5)</li>
-        <li><strong>Max Integration Time:</strong> Maximum time for the integration process</li>
-        <li><strong>Max Steps:</strong> Maximum number of steps to calculate (default is 10,000)</li>
-        <li><strong>Output Format:</strong> Choose what data columns to include in the output layer</li>
-    </ul>
-
-    <h3>Output Formats</h3>
-    <ul>
-        <li><strong>Default (no option):</strong> x y dist
-            <ul>
-                <li>X and Y coordinates</li>
-                <li>Distance along the flowline</li>
-            </ul>
-        </li>
-        <li><strong>Extended (-l):</strong> x y dist v_x v_y
-            <ul>
-                <li>All default columns</li>
-                <li>X and Y velocity components at each point</li>
-            </ul>
-        </li>
-        <li><strong>Full (-t):</strong> x y dist v_x v_y time
-            <ul>
-                <li>All extended columns</li>
-                <li>Integration time for each point</li>
-            </ul>
-        </li>
-    </ul>
-
-    <h2 id="presets">Working with Presets</h2>
-
-    <h3>Saving Presets</h3>
-    <p>
-        To save your current configuration as a preset:
-    </p>
-    <ol>
-        <li>Configure parameters in the main dialog</li>
-        <li>Click "Save as Preset"</li>
-        <li>Enter a name for your preset</li>
-        <li>Confirm to save</li>
-    </ol>
-
-    <h3>Loading Presets</h3>
-    <p>
-        To load a saved preset:
-    </p>
-    <ol>
-        <li>Click "Load Preset" in the main dialog</li>
-        <li>Select a preset from the list</li>
-        <li>Click "Select"</li>
-    </ol>
-
-    <h3>Managing Presets</h3>
-    <p>
-        The preset management dialog allows you to:
-    </p>
-    <ul>
-        <li><strong>View:</strong> See detailed settings for each preset</li>
-        <li><strong>Edit:</strong> Modify parameters for existing presets</li>
-        <li><strong>Delete:</strong> Remove presets that are no longer needed</li>
-    </ul>
-
-    <h3>Using Last Settings</h3>
-    <p>
-        The "Use Last Settings" button quickly reapplies:
-    </p>
-    <ul>
-        <li>The last manually configured settings, or</li>
-        <li>The last preset that was used</li>
-    </ul>
-
-    <div class="note">
-        <strong>Note:</strong> Presets are stored in a <code>presets.json</code> file in the plugin directory and persist between QGIS sessions.
-    </div>
-
-    <h2 id="technical-details">Technical Details</h2>
-
-    <h3>Integration Method</h3>
-    <p>
-        The plugin uses the grd2stream utility, which implements:
-    </p>
-    <ul>
-        <li>4th-order Runge-Kutta integration method</li>
-        <li>Adaptive step size control (optional)</li>
-        <li>Bi-linear interpolation between grid points</li>
-    </ul>
-
-    <h3>Supported File Formats</h3>
-    <p>
-        The plugin can work with any raster format supported by GDAL, including:
-    </p>
-    <ul>
-        <li>GeoTIFF</li>
-        <li>NetCDF</li>
-        <li>HDF5</li>
-        <li>GRIB</li>
-        <li>ASCII Grid</li>
-        <li>Many others</li>
-    </ul>
-
-    <div class="note">
-        <strong>Tip:</strong> For NetCDF and similar multi-dimensional formats, you can select the specific variable by choosing the appropriate band in the input dialog.
-    </div>
-
-    <h3>Output Processing</h3>
-    <p>
-        The plugin:
-    </p>
-    <ol>
-        <li>Executes the grd2stream command with the specified parameters</li>
-        <li>Captures the command output (a text stream of coordinates and attributes)</li>
-        <li>Parses the output and converts it to a QGIS vector layer</li>
-        <li>Adds the vector layer to the current project</li>
-    </ol>
-
-    <h2 id="troubleshooting">Troubleshooting</h2>
-
-    <h3>Common Issues</h3>
-
-    <h4>No Flowline Generated</h4>
-    <ul>
-        <li><strong>Issue:</strong> Plugin runs but no flowline appears</li>
-        <li><strong>Possible causes:</strong>
-            <ul>
-                <li>Seed point placed in an area with zero or undefined velocity</li>
-                <li>Input rasters don't represent valid velocity components</li>
-                <li>Step size too large for the data resolution</li>
-            </ul>
-        </li>
-        <li><strong>Solutions:</strong>
-            <ul>
-                <li>Try a different seed point location</li>
-                <li>Verify raster data represents X and Y velocity components</li>
-                <li>Reduce step size</li>
-            </ul>
-        </li>
-    </ul>
-
-    <h4>Installation Problems</h4>
-    <ul>
-        <li><strong>Issue:</strong> Dependency installation fails</li>
-        <li><strong>Possible causes:</strong>
-            <ul>
-                <li>Network connectivity issues</li>
-                <li>Insufficient disk space</li>
-                <li>Permission issues in home directory</li>
-            </ul>
-        </li>
-        <li><strong>Solutions:</strong>
-            <ul>
-                <li>Check internet connection</li>
-                <li>Ensure at least 1GB free disk space</li>
-                <li>Check QGIS Python console for detailed error messages</li>
-            </ul>
-        </li>
-    </ul>
-
-    <h4>Windows Support</h4>
-    <ul>
-        <li><strong>Issue:</strong> Plugin shows command but doesn't execute it</li>
-        <li><strong>Cause:</strong> Windows execution support is still under development</li>
-        <li><strong>Solution:</strong> Currently not available; Windows support will be added in a future update</li>
-    </ul>
-
-    <h3>Checking Logs</h3>
-    <p>
-        For detailed troubleshooting:
-    </p>
-    <ol>
-        <li>Open the QGIS Python Console (Plugins → Python Console)</li>
-        <li>Look for messages related to grd2stream</li>
-        <li>Check detailed execution logs and error messages</li>
-    </ol>
-
-    <h2 id="development">Development Information</h2>
-
-    <h3>Plugin Structure</h3>
-    <p>
-        The plugin code is organized as follows:
-    </p>
-    <ul>
-        <li><strong>__init__.py</strong> - Plugin initialization</li>
-        <li><strong>grd_2_stream.py</strong> - Main plugin class and QGIS integration</li>
-        <li><strong>flowline_module.py</strong> - Core functionality</li>
-        <li><strong>dialog_selection.py</strong> - UI for parameter selection</li>
-        <li><strong>dialog_preset.py</strong> - UI for preset management</li>
-        <li><strong>help_widget.py</strong> - Help documentation display</li>
-    </ul>
-
-    <h3>Contributing</h3>
-    <p>
-        Contributions to the plugin are welcome! Priority areas include:
-    </p>
-    <ul>
-        <li>Windows support implementation</li>
-    </ul>
-
-    <h2 id="license">License Information</h2>
-
-    <h3>Plugin License</h3>
-    <p>
-        The grd2stream QGIS plugin is licensed under the GNU General Public License v3.0 (GPL-3.0).
-    </p>
-
-    <h3>Third-Party Components</h3>
-    <p>
-        The plugin includes:
-    </p>
-    <ul>
-        <li><strong>grd2stream</strong> command-line tool by Thomas Kleiner:
-            <ul>
-                <li>Licensed under the BSD 3-Clause License</li>
-                <li>See the full license text in <code>lib/LICENSE.txt</code></li>
-            </ul>
-        </li>
-    </ul>
-
-    <h3>Copyright</h3>
-    <p>
-        © 2013-2025 Thomas Kleiner & ScienceFlightPlanner-Team
-    </p>
+            window.addEventListener('scroll', checkScrollReveal);
+            checkScrollReveal(); // Check on page load
+        });
+    </script>
 </body>
 </html>
