@@ -60,23 +60,23 @@
     </style>
 </head>
 <body>
-    <h1>grd2stream QGIS Plugin - User Guide</h1>
+    <h1>grd2stream User Manual</h1>
 
     <h2>What is grd2stream?</h2>
     <p>
-        grd2stream is a QGIS plugin that generates flowlines from velocity grid data. It allows you to:
+        grd2stream is a plugin that generates streamlines from gridded data. It allows you to:
     </p>
     <ul>
-        <li>Select seed points to generate flowlines showing direction of flow</li>
+        <li>Either type in or interactively select seed points to generate the flowlines</li>
         <li>Work with various raster formats through GDAL compatibility</li>
-        <li>Configure flowline calculation parameters and save them as presets</li>
+        <li>Configure calculation parameters & save them as presets</li>
     </ul>
 
     <div class="note">
         <strong>Platform Support:</strong>
         <ul>
             <li><strong>macOS/Linux:</strong> Fully supported</li>
-            <li><strong>Windows:</strong> Currently in development; you can configure parameters but execution will only display the command needed</li>
+            <li><strong>Windows:</strong> Partially supported (still in development)</li>
         </ul>
     </div>
 
@@ -89,16 +89,16 @@
     <ol>
         <li>If needed, the plugin will offer to install GMT6 (via Miniconda) into an isolated environment</li>
         <li>It will also install the grd2stream command-line utility</li>
-        <li>These installations won't affect any existing GMT installations on your system</li>
+        <li>These installations won't affect any existing GMT installations on your system!</li>
     </ol>
 
     <h3>Basic Usage</h3>
     <ol>
         <li>Click the grd2stream icon in the QGIS toolbar</li>
-        <li>Select two raster layers representing X and Y velocity components</li>
+        <li>Select two raster layers containing X and Y component data</li>
         <li>Configure your parameters (or load a preset)</li>
         <li>Choose how to select your seed point (map click or manual coordinates)</li>
-        <li>The plugin will calculate and display the flowline as a vector layer</li>
+        <li>The plugin will calculate & display the flowline as a vector layer</li>
     </ol>
 
     <h2>Configuration Options</h2>
@@ -112,17 +112,17 @@
         </tr>
         <tr>
             <td>Raster 1</td>
-            <td>X-component velocity grid</td>
+            <td>X-component dataset</td>
             <td>Required</td>
         </tr>
         <tr>
             <td>Raster 2</td>
-            <td>Y-component velocity grid</td>
+            <td>Y-component dataset</td>
             <td>Required</td>
         </tr>
         <tr>
             <td>Backward Steps</td>
-            <td>Trace flowline in both upstream and downstream directions</td>
+            <td>Trace flowline in both upstream & downstream directions</td>
             <td>Off</td>
         </tr>
         <tr>
@@ -149,17 +149,17 @@
 
     <h3>Output Formats</h3>
     <ul>
-        <li><strong>Default:</strong> x y dist (coordinates and distance along flowline)</li>
-        <li><strong>Extended:</strong> x y dist v_x v_y (includes velocity components)</li>
+        <li><strong>Default:</strong> x y dist (coordinates & distance along flowline)</li>
+        <li><strong>Extended:</strong> x y dist v_x v_y (includes vector components)</li>
         <li><strong>Full:</strong> x y dist v_x v_y time (includes integration time)</li>
     </ul>
 
     <h2>Working with Presets</h2>
     <p>
-        Save time by storing and reusing configurations:
+        Save time by storing & reusing configurations:
     </p>
     <ul>
-        <li><strong>Save Preset:</strong> After configuring parameters, click "Save as Preset" and name it</li>
+        <li><strong>Save Preset:</strong> After configuring parameters, click "Save as Preset" & name it</li>
         <li><strong>Load Preset:</strong> Click "Load Preset" to select from saved configurations</li>
         <li><strong>Last Settings:</strong> Click "Use Last Settings" to quickly reapply previous configuration</li>
     </ul>
@@ -172,7 +172,7 @@
 
     <h3>Common Issues</h3>
     <ul>
-        <li><strong>No flowline generated:</strong> Ensure seed point is placed in an area with non-zero velocity data</li>
+        <li><strong>No flowline generated:</strong> Ensure seed point was not placed in an area with undefined values</li>
         <li><strong>Missing dependencies:</strong> Allow the plugin to install required components when prompted</li>
         <li><strong>Unexpected results:</strong> Verify that both input rasters have the same extent, resolution, and coordinate system</li>
     </ul>
@@ -190,6 +190,6 @@
     </p>
 
     <hr>
-    <p>© 2013-2025 Thomas Kleiner & ScienceFlightPlanner-Team</p>
+    <p>© 2013-2025 Abraham Wondimu, Anna Menshikova, Maxim Poliakov, Simon Povh & Thomas Kleiner</p>
 </body>
 </html>
