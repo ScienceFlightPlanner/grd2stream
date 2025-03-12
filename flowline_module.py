@@ -72,7 +72,7 @@ class FlowlineModule:
         self.conda_path = os.path.join(self.miniconda_path, "bin", "conda")
         if self.system in ["Linux", "Darwin"]:
             self.configure_environment()
-        self.preset_manager = PresetManager(os.path.dirname(__file__))
+        self.preset_manager = PresetManager(os.path.dirname(os.path.dirname(__file__)))
         self.last_used_preset = None
         self.last_executed_command = None
 

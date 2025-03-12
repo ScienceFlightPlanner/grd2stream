@@ -1,17 +1,17 @@
-# grd2stream – QGIS Plugin
+# grd2stream – a QGIS Plugin
 
-**Generate stream lines from velocity grids**
+**Generate streamlines from gridded datasets**
 
 ![grd2stream logo](icon.png)
 
-The `grd2stream` QGIS plugin allows you to comfortably generate multiple flowlines from gridded velocity fields by selecting seed points. This plugin utilizes [GMT6](https://www.generic-mapping-tools.org/) to ensure compatibility with all GDAL file formats!
+The [`grd2stream`](https://scienceflightplanner.github.io/grd2stream/) QGIS plugin allows you to comfortably generate multiple flowlines from gridded datasets by selecting seed points. This plugin utilizes [GMT6](https://www.generic-mapping-tools.org/) to ensure compatibility with all GDAL file formats!
 
 ## 🌟 Features
 
-- Generate streamlines using Runge-Kutta integration from any GDAL-compatible velocity grids
-- Interactive seed point selection via map clicks or coordinate input
+- Generate streamlines using Runge-Kutta integration from any GDAL-compatible rasters
+- Interactive seed point selection via map clicks or manual coordinate entry
 - Configurable integration parameters (step size, max steps, etc.)
-- Save and load parameter presets for repeated workflows
+- Save & load parameter presets for repeated workflows
 - Isolated Conda environment that doesn't interfere with existing GMT installations
 
 ## 🖥️ Platform Support
@@ -26,8 +26,8 @@ The `grd2stream` QGIS plugin allows you to comfortably generate multiple flowlin
 
 ## 📋 Prerequisites
 
-- QGIS 3.0 or higher
-- On Linux/macOS: Internet connection for initial dependency installation
+- QGIS 3.4 or higher
+- Internet connection for initial dependency installation
 - ~500 MB disk space for Conda environment (if dependencies need to be installed)
 
 ## 🔧 Installation
@@ -52,11 +52,11 @@ The `grd2stream` QGIS plugin allows you to comfortably generate multiple flowlin
 1. Click the grd2stream icon in the QGIS toolbar
 2. If this is your first run, allow the plugin to install required dependencies (Linux/macOS only)
 3. Select two raster layers:
-   - First raster: X-component velocity grid
-   - Second raster: Y-component velocity grid
+   - First raster: X component data
+   - Second raster: Y component data
 4. Configure parameters or load a saved preset
 5. Choose a method to select the seed point (map click or manual coordinates)
-6. The plugin will calculate the flowline and add it as a vector layer to your project
+6. The plugin will calculate the flowline & add it as a vector layer to your project
 
 ## ⚙️ Parameters
 
@@ -78,19 +78,19 @@ Save time by storing your parameter configurations:
 
 ## ❓ Troubleshooting
 
-- **No flowline appears**: Try placing the seed point in an area with non-zero velocity values
-- **Dependency installation fails**: Check internet connection and QGIS Python console for details
-- **Windows limitations**: Currently the plugin can only display what command would be executed on Windows
+- **No flowline appears**: Ensure seed point was not placed in an area with undefined values
+- **Missing dependencies**: Allow the plugin to install required components when prompted
+- **Unexpected results**: Verify that both input rasters have the same extent, resolution, and coordinate system
 
 For detailed logs, check the QGIS Python console!
 
 ## 🔄 How It Works
 
 The plugin:
-1. Reads velocity data from two input rasters (X and Y components)
+1. Reads data from two input rasters (X and Y components)
 2. Uses GMT6's grd2stream utility to perform Runge-Kutta integration
-3. Traces a flowline from the seed point following the velocity field
-4. Converts the results to a QGIS vector layer
+3. Traces streamline starting from chosen seed point
+4. Converts the output to a QGIS vector layer
 
 ### Contributing
 
@@ -100,16 +100,9 @@ Contributions are welcome! Priority areas include:
 ## 📜 License
 
 - **Plugin**: GNU General Public License v3.0 (GPL-3.0)
-- **grd2stream CLI tool**: BSD 3-Clause License (see [lib/LICENSE.txt](lib/LICENSE.txt))
+- [**grd2stream CLI tool**](https://github.com/tkleiner/grd2stream): BSD 3-Clause License (see [lib/LICENSE.txt](lib/LICENSE.txt))
 
 ## 👥 Authors
 
 - [**Thomas Kleiner**](https://github.com/tkleiner)
 - [**ScienceFlightPlanner**](https://github.com/ScienceFlightPlanner)
-
-## 🔗 Links
-
-- [Plugin Repository](https://github.com/ScienceFlightPlanner/grd2stream)
-- [Issue Tracker](https://github.com/ScienceFlightPlanner/grd2stream/issues)
-- [grd2stream CLI tool](https://github.com/tkleiner/grd2stream)
-- [Documentation](https://scienceflightplanner.github.io/grd2stream/)
