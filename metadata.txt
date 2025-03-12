@@ -20,7 +20,16 @@ repository=https://github.com/ScienceFlightPlanner/grd2stream
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-changelog=added dark mode support & ensured presets persist with plugin re-installations
+changelog=1.1 (2025-03-13)
+    - changed plugin icon
+    - updated plugin homepage
+    - minor changes in help manual
+    - fixed help manual's visibility in dark mode
+    - fixed dark theme detection for dynamic icon display
+    - changed presets directory for it to persist across reinstalls
+
+    1.0 (2025-03-11)
+    - Initial release
 
 # Tags are comma separated with spaces allowed
 tags=velocity field, grid, flowline
