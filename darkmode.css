@@ -1,0 +1,246 @@
+/* Dark mode variables and theme switching */
+:root {
+  /* Light mode (default) */
+  --primary-color: #2D3E50;
+  --secondary-color: #3498DB;
+  --accent-color: #E74C3C;
+  --light-accent: #F1C40F;
+  --text-color: #333;
+  --light-text: #666;
+  --bg-color: #fff;
+  --light-bg: #f8f9fa;
+  --card-bg: #fcfcfc;
+  --border-color: #ddd;
+  --code-bg: #f5f5f5;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+  --transition-speed: 0.3s;
+  --border-radius: 5px;
+  --content-width: 1100px;
+}
+
+/* Dark mode variables */
+body.dark-mode {
+  --primary-color: #81a4cd; /* Lighter blue for headings in dark mode */
+  --secondary-color: #3498db; /* Brighter blue for better contrast */
+  --accent-color: #e74c3c; /* Brighter red for better visibility */
+  --light-accent: #f1c40f; /* Brighter yellow for better visibility */
+  --text-color: #e0e0e0;
+  --light-text: #aaaaaa;
+  --bg-color: #121212;
+  --light-bg: #1e1e1e;
+  --card-bg: #2a2a2a;
+  --border-color: #444;
+  --code-bg: #2d2d2d;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Dark mode toggle styling */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--card-bg);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  border: 1px solid var(--border-color);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle i {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  transition: color var(--transition-speed);
+}
+
+/* Dark mode specific overrides for better readability */
+body.dark-mode .site-header {
+  background: linear-gradient(135deg, #1a3752, #3498db);
+}
+
+body.dark-mode .parameter-table th {
+  background: linear-gradient(90deg, #1a3752, #3498db);
+}
+
+body.dark-mode .issue-header {
+  background: linear-gradient(90deg, #1a3752, #3498db);
+}
+
+/* Improve heading readability in dark mode */
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: var(--primary-color); /* Using the lighter blue we set for headings */
+}
+
+/* Ensure section titles have good contrast */
+body.dark-mode .toc-section h2,
+body.dark-mode #overview,
+body.dark-mode #installation,
+body.dark-mode #platform-support,
+body.dark-mode #architecture,
+body.dark-mode #usage,
+body.dark-mode #presets,
+body.dark-mode #technical-details,
+body.dark-mode #troubleshooting,
+body.dark-mode #development,
+body.dark-mode #license {
+  color: #ffffff; /* White for main section headers for maximum visibility */
+  border-bottom-color: #444;
+}
+
+body.dark-mode a {
+  color: #5dade2; /* Brighter blue for better contrast in dark mode */
+}
+
+body.dark-mode a:hover {
+  color: #f1948a; /* Lighter version of accent color for hover state */
+}
+
+body.dark-mode .cta-button {
+  background: linear-gradient(90deg, #2980b9, #c0392b);
+}
+
+body.dark-mode .step-number::after {
+  background: linear-gradient(135deg, #2980b9, #c0392b);
+}
+
+body.dark-mode .badge-primary {
+  background-color: #2980b9;
+}
+
+body.dark-mode .workflow-icon {
+  background: linear-gradient(135deg, #2980b9, #c0392b);
+}
+
+body.dark-mode .format-badge:hover {
+  background-color: #2980b9;
+}
+
+body.dark-mode .processing-step .step-number {
+  background: linear-gradient(135deg, #2980b9, #c0392b);
+}
+
+/* Enhance note, tip, warning etc. for dark mode readability */
+body.dark-mode .note {
+  background-color: rgba(41, 128, 185, 0.2);
+}
+
+body.dark-mode .warning {
+  background-color: rgba(192, 57, 43, 0.2);
+}
+
+body.dark-mode .tip {
+  background-color: rgba(39, 174, 96, 0.2);
+}
+
+body.dark-mode .info-box {
+  background-color: rgba(212, 172, 13, 0.2);
+}
+
+/* Improve code readability in dark mode */
+body.dark-mode code {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+/* Adjust log instructions for dark mode */
+body.dark-mode .log-instructions {
+  background-color: rgba(20, 20, 20, 0.9);
+}
+
+body.dark-mode .log-instructions code {
+  background-color: rgba(50, 50, 50, 0.9);
+}
+
+/* Ensure table rows have good contrast in dark mode */
+body.dark-mode .parameter-table tr:hover {
+  background-color: rgba(41, 128, 185, 0.2);
+}
+
+/* Improve contrast for benefits list check icons */
+body.dark-mode .benefits-list i {
+  color: #2ecc71; /* Keeping this bright green for better visibility */
+}
+
+body.dark-mode .site-footer {
+  background-color: #234567; /* Lighter blue for footer in dark mode */
+}
+
+/* Ensure footer links are visible in dark mode */
+body.dark-mode .footer-column a {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .footer-bottom {
+  color: rgba(255, 255, 255, 0.9); /* Brighter footer text in dark mode */
+  border-top-color: rgba(255, 255, 255, 0.15); /* Slightly brighter border */
+}
+
+/* Better highlighting for the TOC cards in dark mode */
+body.dark-mode .toc-card:hover {
+  background-color: #3a3a3a;
+}
+
+/* Improve TOC card readability */
+body.dark-mode .toc-card h3 {
+  color: #ffffff; /* White for better contrast */
+}
+
+/* Make sure the back to top button stands out */
+body.dark-mode .back-to-top {
+  background-color: #3498db;
+}
+
+body.dark-mode .back-to-top:hover {
+  background-color: #e74c3c;
+}
+
+/* Fix other specific components */
+body.dark-mode .step-title {
+  color: #ffffff; /* White for better contrast */
+}
+
+body.dark-mode .workflow-content h4 {
+  color: #ffffff; /* White for better contrast */
+}
+
+body.dark-mode .issue-problem h5,
+body.dark-mode .issue-causes h5,
+body.dark-mode .issue-solutions h5 {
+  color: #ffffff; /* White for better contrast */
+}
+
+body.dark-mode .file-content h4 {
+  color: #ffffff; /* White for better contrast */
+}
+
+/* Ensure platform card headings are visible */
+body.dark-mode .platform-name {
+  color: #ffffff;
+}
+
+/* Make status badges more readable in dark mode */
+body.dark-mode .status-supported {
+  background-color: rgba(46, 204, 113, 0.3);
+  color: #2ecc71;
+}
+
+body.dark-mode .status-coming {
+  background-color: rgba(52, 152, 219, 0.3);
+  color: #3498db;
+}
