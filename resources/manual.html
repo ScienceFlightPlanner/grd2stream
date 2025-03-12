@@ -6,61 +6,148 @@
     <title>grd2stream QGIS Plugin Manual</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             line-height: 1.6;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            color: #333;
+            color: #2c3e50;
             background-color: #F5FFFA;
         }
         h1 {
-            color: #2D3E50;
-            border-bottom: 2px solid #3498DB;
-            padding-bottom: 10px;
+            color: #2980b9;
+            border-bottom: 3px solid #3498DB;
+            padding-bottom: 12px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 28px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
         }
         h2 {
-            color: #2980B9;
+            color: #2980b9;
             margin-top: 30px;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
         }
         h3 {
             color: #3498DB;
+            margin-top: 20px;
+            font-weight: 600;
         }
         code {
             background: #f5f5f5;
-            padding: 2px 5px;
+            padding: 3px 6px;
             border-radius: 3px;
-            font-family: monospace;
+            font-family: Consolas, monospace;
+            font-size: 0.95em;
+            color: #16a085;
         }
         .note {
             background: #e7f5fe;
-            border-left: 4px solid #3498DB;
-            padding: 10px 15px;
+            border: 1px solid #bde5f8;
+            border-left: 5px solid #3498DB;
+            padding: 12px 18px;
             margin: 20px 0;
+            border-radius: 3px;
         }
         .warning {
             background: #ffeaea;
-            border-left: 4px solid #E74C3C;
-            padding: 10px 15px;
+            border: 1px solid #ffcfcf;
+            border-left: 5px solid #E74C3C;
+            padding: 12px 18px;
             margin: 20px 0;
+            border-radius: 3px;
         }
         table {
             border-collapse: collapse;
             width: 100%;
             margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px 12px;
+            padding: 10px 14px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #f2f7fb;
+            color: #2980b9;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 30px 0 20px;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li strong {
+            color: #2c3e50;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        .footer {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Extra styles for better visual rhythm */
+        ul li::marker {
+            color: #3498DB;
+        }
+
+        ol li::marker {
+            color: #3498DB;
+        }
+
+        .homepage-container {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: #f2f7fb;
+            border-radius: 5px;
+            border: 1px solid #d1e6f9;
+        }
+
+        .homepage-container p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
     <h1>grd2stream User Manual</h1>
+    <div class="homepage-container">
+        <p>
+            <strong>Homepage:</strong> <a href="https://scienceflightplanner.github.io/grd2stream/" target="_blank" style="color: #2980b9; text-decoration: none; font-weight: 500;">https://scienceflightplanner.github.io/grd2stream/</a>
+        </p>
+    </div>
 
     <h2>What is grd2stream?</h2>
     <p>
@@ -189,7 +276,8 @@
         The plugin includes the grd2stream command-line utility by Thomas Kleiner, licensed under the BSD 3-Clause License. See the full license text in lib/LICENSE.txt.
     </p>
 
-    <hr>
-    <p>© 2013-2025 Abraham Wondimu, Anna Menshikova, Maxim Poliakov, Simon Povh & Thomas Kleiner</p>
+    <div class="footer">
+        <p>© 2013-2025 Abraham Wondimu, Anna Menshikova, Maxim Poliakov, Simon Povh & Thomas Kleiner</p>
+    </div>
 </body>
 </html>
