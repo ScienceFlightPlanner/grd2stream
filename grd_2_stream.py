@@ -40,6 +40,18 @@ from .help_widget import add_help_menu_action
 plugin_instance = None
 
 
+def is_dark_theme():
+    """Detect if QGIS is using a dark theme by sampling colors from the UI"""
+    from qgis.PyQt.QtWidgets import QApplication
+    from qgis.PyQt.QtGui import QPalette
+    app = QApplication.instance()
+    background_color = app.palette().color(QPalette.Window)
+    luminance = (0.299 * background_color.red() +
+                 0.587 * background_color.green() +
+                 0.114 * background_color.blue()) / 255
+    return luminance < 0.5
+
+
 class Grd2Stream:
     """QGIS Plugin Implementation."""
 
@@ -127,18 +139,27 @@ class Grd2Stream:
         self.toolbar.addAction(action)
         return action
 
+    def update_icon_theme(self):
+        """Update the icon based on the current theme"""
+        if is_dark_theme():
+            icon_path = os.path.join(self.icon_dir, "flowline_darkmode.png")
+        else:
+            icon_path = os.path.join(self.icon_dir, "flowline.png")
+        if os.path.exists(icon_path):
+            self.flowline_action.setIcon(QIcon(icon_path))
+
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        if QgsSettings().value("UI/UITheme", "default") == "default":
-            icon_path = "flowline.png"
-        else:
-            icon_path = "flowline_darkmode.png"
+        icon_path = "flowline.png"
         self.flowline_action = self.add_action(
             icon=icon_path,
             text="Calculate Flowlines",
             callback=self.flowline_module.open_selection_dialog
         )
         self.help_action = add_help_menu_action(self.iface, self.plugin_dir)
+        self.update_icon_theme()
+        from qgis.PyQt.QtWidgets import QApplication
+        QApplication.instance().paletteChanged.connect(self.update_icon_theme)
 
     def unload(self):
         """Properly unloads the plugin, ensuring no lingering instances."""

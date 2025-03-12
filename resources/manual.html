@@ -6,76 +6,164 @@
     <title>grd2stream QGIS Plugin Manual</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             line-height: 1.6;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            color: #333;
+            color: #2c3e50;
+            background-color: #F5FFFA;
         }
         h1 {
-            color: #2D3E50;
-            border-bottom: 2px solid #3498DB;
-            padding-bottom: 10px;
+            color: #2980b9;
+            border-bottom: 3px solid #3498DB;
+            padding-bottom: 12px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 28px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
         }
         h2 {
-            color: #2980B9;
+            color: #2980b9;
             margin-top: 30px;
+            font-weight: 600;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
         }
         h3 {
             color: #3498DB;
+            margin-top: 20px;
+            font-weight: 600;
         }
         code {
             background: #f5f5f5;
-            padding: 2px 5px;
+            padding: 3px 6px;
             border-radius: 3px;
-            font-family: monospace;
+            font-family: Consolas, monospace;
+            font-size: 0.95em;
+            color: #16a085;
         }
         .note {
             background: #e7f5fe;
-            border-left: 4px solid #3498DB;
-            padding: 10px 15px;
+            border: 1px solid #bde5f8;
+            border-left: 5px solid #3498DB;
+            padding: 12px 18px;
             margin: 20px 0;
+            border-radius: 3px;
         }
         .warning {
             background: #ffeaea;
-            border-left: 4px solid #E74C3C;
-            padding: 10px 15px;
+            border: 1px solid #ffcfcf;
+            border-left: 5px solid #E74C3C;
+            padding: 12px 18px;
             margin: 20px 0;
+            border-radius: 3px;
         }
         table {
             border-collapse: collapse;
             width: 100%;
             margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px 12px;
+            padding: 10px 14px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #f2f7fb;
+            color: #2980b9;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 30px 0 20px;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li strong {
+            color: #2c3e50;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        .footer {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Extra styles for better visual rhythm */
+        ul li::marker {
+            color: #3498DB;
+        }
+
+        ol li::marker {
+            color: #3498DB;
+        }
+
+        .homepage-container {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: #f2f7fb;
+            border-radius: 5px;
+            border: 1px solid #d1e6f9;
+        }
+
+        .homepage-container p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <h1>grd2stream QGIS Plugin - User Guide</h1>
+    <h1>grd2stream User Manual</h1>
+    <div class="homepage-container">
+        <p>
+            <strong>Homepage:</strong> <a href="https://scienceflightplanner.github.io/grd2stream/" target="_blank" style="color: #2980b9; text-decoration: none; font-weight: 500;">https://scienceflightplanner.github.io/grd2stream/</a>
+        </p>
+    </div>
 
     <h2>What is grd2stream?</h2>
     <p>
-        grd2stream is a QGIS plugin that generates flowlines from velocity grid data. It allows you to:
+        grd2stream is a plugin that generates streamlines from gridded data. It allows you to:
     </p>
     <ul>
-        <li>Select seed points to generate flowlines showing direction of flow</li>
+        <li>Either type in or interactively select seed points to generate the flowlines</li>
         <li>Work with various raster formats through GDAL compatibility</li>
-        <li>Configure flowline calculation parameters and save them as presets</li>
+        <li>Configure calculation parameters & save them as presets</li>
     </ul>
 
     <div class="note">
         <strong>Platform Support:</strong>
         <ul>
             <li><strong>macOS/Linux:</strong> Fully supported</li>
-            <li><strong>Windows:</strong> Currently in development; you can configure parameters but execution will only display the command needed</li>
+            <li><strong>Windows:</strong> Partially supported (still in development)</li>
         </ul>
     </div>
 
@@ -88,16 +176,16 @@
     <ol>
         <li>If needed, the plugin will offer to install GMT6 (via Miniconda) into an isolated environment</li>
         <li>It will also install the grd2stream command-line utility</li>
-        <li>These installations won't affect any existing GMT installations on your system</li>
+        <li>These installations won't affect any existing GMT installations on your system!</li>
     </ol>
 
     <h3>Basic Usage</h3>
     <ol>
         <li>Click the grd2stream icon in the QGIS toolbar</li>
-        <li>Select two raster layers representing X and Y velocity components</li>
+        <li>Select two raster layers containing X and Y component data</li>
         <li>Configure your parameters (or load a preset)</li>
         <li>Choose how to select your seed point (map click or manual coordinates)</li>
-        <li>The plugin will calculate and display the flowline as a vector layer</li>
+        <li>The plugin will calculate & display the flowline as a vector layer</li>
     </ol>
 
     <h2>Configuration Options</h2>
@@ -111,17 +199,17 @@
         </tr>
         <tr>
             <td>Raster 1</td>
-            <td>X-component velocity grid</td>
+            <td>X-component dataset</td>
             <td>Required</td>
         </tr>
         <tr>
             <td>Raster 2</td>
-            <td>Y-component velocity grid</td>
+            <td>Y-component dataset</td>
             <td>Required</td>
         </tr>
         <tr>
             <td>Backward Steps</td>
-            <td>Trace flowline in both upstream and downstream directions</td>
+            <td>Trace flowline in both upstream & downstream directions</td>
             <td>Off</td>
         </tr>
         <tr>
@@ -148,17 +236,17 @@
 
     <h3>Output Formats</h3>
     <ul>
-        <li><strong>Default:</strong> x y dist (coordinates and distance along flowline)</li>
-        <li><strong>Extended:</strong> x y dist v_x v_y (includes velocity components)</li>
+        <li><strong>Default:</strong> x y dist (coordinates & distance along flowline)</li>
+        <li><strong>Extended:</strong> x y dist v_x v_y (includes vector components)</li>
         <li><strong>Full:</strong> x y dist v_x v_y time (includes integration time)</li>
     </ul>
 
     <h2>Working with Presets</h2>
     <p>
-        Save time by storing and reusing configurations:
+        Save time by storing & reusing configurations:
     </p>
     <ul>
-        <li><strong>Save Preset:</strong> After configuring parameters, click "Save as Preset" and name it</li>
+        <li><strong>Save Preset:</strong> After configuring parameters, click "Save as Preset" & name it</li>
         <li><strong>Load Preset:</strong> Click "Load Preset" to select from saved configurations</li>
         <li><strong>Last Settings:</strong> Click "Use Last Settings" to quickly reapply previous configuration</li>
     </ul>
@@ -171,7 +259,7 @@
 
     <h3>Common Issues</h3>
     <ul>
-        <li><strong>No flowline generated:</strong> Ensure seed point is placed in an area with non-zero velocity data</li>
+        <li><strong>No flowline generated:</strong> Ensure seed point was not placed in an area with undefined values</li>
         <li><strong>Missing dependencies:</strong> Allow the plugin to install required components when prompted</li>
         <li><strong>Unexpected results:</strong> Verify that both input rasters have the same extent, resolution, and coordinate system</li>
     </ul>
@@ -188,7 +276,8 @@
         The plugin includes the grd2stream command-line utility by Thomas Kleiner, licensed under the BSD 3-Clause License. See the full license text in lib/LICENSE.txt.
     </p>
 
-    <hr>
-    <p>© 2013-2025 Thomas Kleiner & ScienceFlightPlanner-Team</p>
+    <div class="footer">
+        <p>© 2013-2025 Abraham Wondimu, Anna Menshikova, Maxim Poliakov, Simon Povh & Thomas Kleiner</p>
+    </div>
 </body>
 </html>
