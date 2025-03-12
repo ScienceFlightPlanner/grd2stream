@@ -8,7 +8,7 @@ from qgis.PyQt.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QListWidget,
 class PresetManager:
     def __init__(self, plugin_dir):
         self.plugin_dir = plugin_dir
-        self.presets_file = os.path.join(plugin_dir, "presets.json")
+        self.presets_file = os.path.join(plugin_dir, "grd2stream_presets.json")
         self.presets = self.load_presets()
 
     def load_presets(self):
