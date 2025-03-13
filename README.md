@@ -4,7 +4,7 @@
 
 ![grd2stream logo](icon.png)
 
-The [`grd2stream`](https://scienceflightplanner.github.io/grd2stream/) QGIS plugin allows you to comfortably generate multiple flowlines from gridded datasets by selecting seed points. This plugin utilizes [GMT6](https://www.generic-mapping-tools.org/) to ensure compatibility with all GDAL file formats!
+The [`grd2stream`](https://scienceflightplanner.github.io/grd2stream/) QGIS plugin allows you to comfortably generate multiple flowlines from gridded datasets by selecting seed points. This plugin utilizes [GMT6](https://docs.generic-mapping-tools.org/latest/devdocs/api.html) to ensure compatibility with all GDAL file formats!
 
 ## 🌟 Features
 
