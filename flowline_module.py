@@ -278,6 +278,12 @@ class FlowlineModule:
             print("grd2stream is already installed!")
             return
         print("Installing grd2stream...")
+
+        if not self.is_gmt6_installed():
+            print("DEBUG: GMT6 environment does not appear to be properly installed.")
+        else:
+            print("DEBUG: GMT6 environment detected.")
+
         self.show_download_popup("Building & Installing grd2stream...")
         # grd2stream-0.2.14
         # Copyright (c) 2013-2024, Thomas Kleiner
@@ -286,16 +292,59 @@ class FlowlineModule:
         local_tar = os.path.join(plugin_root, "lib", "grd2stream-0.2.14.tar.gz")
         try:
             with tempfile.TemporaryDirectory() as build_dir:
+                print(f"DEBUG: Using temporary build directory: {build_dir}")
                 subprocess.run(
                     ["tar", "xvfz", local_tar],
                     cwd=build_dir,
                     check=True
                 )
                 grd2stream_dir = os.path.join(build_dir, "grd2stream-0.2.14")
+                print(f"DEBUG: Extracted grd2stream to: {grd2stream_dir}")
+
+                configure_path = os.path.join(grd2stream_dir, "configure")
+                if not os.path.exists(configure_path):
+                    print("ERROR: 'configure' file not found in the extracted directory!")
+                    return
+                else:
+                    print(f"DEBUG: Found 'configure' file at: {configure_path}")
+
+                if not os.access(configure_path, os.X_OK):
+                    print("DEBUG: 'configure' is not executable. Attempting to add execute permissions...")
+                    try:
+                        os.chmod(configure_path, 0o755)
+                        print("DEBUG: Execute permissions successfully added to 'configure'.")
+                    except Exception as chmod_err:
+                        print(f"ERROR: Failed to change permissions on 'configure': {chmod_err}")
+                else:
+                    print("DEBUG: 'configure' file has proper execute permissions.")
+
+                if self.system == "Darwin":
+                    try:
+                        result = subprocess.run(
+                            ["xattr", "-p", "com.apple.quarantine", configure_path],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            text=True
+                        )
+                        if result.returncode == 0:
+                            print("DEBUG: 'configure' file has quarantine attribute:", result.stdout.strip())
+                            try:
+                                subprocess.run(
+                                    ["xattr", "-d", "com.apple.quarantine", configure_path],
+                                    check=True
+                                )
+                                print("DEBUG: Quarantine attribute removed from 'configure' file.")
+                            except subprocess.CalledProcessError as xattr_err:
+                                print(f"WARNING: Failed to remove quarantine attribute: {xattr_err}")
+                        else:
+                            print("DEBUG: No quarantine attribute found on 'configure' file.")
+                    except Exception as e:
+                        print(f"DEBUG: Error while checking quarantine attribute: {e}")
 
                 if self.system in ["Linux", "Darwin"]:
                     env = os.environ.copy()
                     env["LDFLAGS"] = "-Wl,-rpath,$CONDA_PREFIX/lib"
+                    print("DEBUG: Running './configure' with GMT API enabled...")
                     subprocess.run(
                         [self.conda_path, "run", "-n", "GMT6", "bash", "-c",
                          f'./configure --prefix="{gmt6_env_path}" --enable-gmt-api'],
@@ -303,19 +352,22 @@ class FlowlineModule:
                         env=env,
                         check=True
                     )
+                    print("DEBUG: Running 'make'...")
                     subprocess.run(
                         [self.conda_path, "run", "-n", "GMT6", "make"],
                         cwd=grd2stream_dir,
                         check=True
                     )
+                    print("DEBUG: Running 'make install'...")
                     subprocess.run(
                         [self.conda_path, "run", "-n", "GMT6", "make", "install"],
                         cwd=grd2stream_dir,
                         check=True
                     )
-                    # idk if stil needed
+                    # idk if still needed
                     if self.system == "Darwin" and os.path.exists(grd2stream_executable):
                         rpath = os.path.join(gmt6_env_path, "lib")
+                        print(f"DEBUG: Adjusting rpath for grd2stream executable using rpath: {rpath}")
                         subprocess.run(
                             ["install_name_tool", "-add_rpath", rpath, grd2stream_executable],
                             check=True
