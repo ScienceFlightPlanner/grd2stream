@@ -334,9 +334,17 @@ class FlowlineModule:
     def is_gmt6_installed(self):
         if self.system == "Windows":
             return False
-        else:
-            gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
-            return os.path.exists(gmt6_env_path)
+        gmt6_env_path = os.path.join(self.miniconda_path, "envs", "GMT6")
+        if not os.path.exists(gmt6_env_path):
+            print("GMT6 environment not found")
+            return False
+        has_executable = os.path.exists(os.path.join(gmt6_env_path, "bin", "gmt"))
+        has_include = os.path.exists(os.path.join(gmt6_env_path, "include", "gmt"))
+        if not has_executable:
+            print("GMT executable not found")
+        if not has_include:
+            print("GMT development headers not found")
+        return has_executable and has_include
 
     def prompt_missing_installation(self):
         if self.system == "Windows":
